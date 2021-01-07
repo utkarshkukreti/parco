@@ -12,13 +12,15 @@ export class Parser<A> {
   }
 }
 
-export const string = <A extends string>(string: A): Parser<A> =>
-  new Parser(input => {
+export const string = <A extends string>(string: A): Parser<A> => {
+  const expected = `expected ${JSON.stringify(string)}`
+  return new Parser(input => {
     if (input.startsWith(string)) {
       return { ok: true, input: input.slice(string.length), value: string }
     }
-    return { ok: false, input, value: `expected ${JSON.stringify(string)}` }
+    return { ok: false, input, value: expected }
   })
+}
 
 export const regex = (regex: RegExp): Parser<string> => {
   const expected = `expected /${regex.source}/${regex.flags}`
