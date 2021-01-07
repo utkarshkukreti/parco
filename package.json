@@ -1,8 +1,8 @@
 {
-  "name": "change-me",
+  "name": "parco",
   "version": "0.1.0",
   "main": "dist/index.js",
-  "module": "dist/change-me.esm.js",
+  "module": "dist/parco.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
