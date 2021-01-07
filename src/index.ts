@@ -19,3 +19,14 @@ export const string = <A extends string>(string: A): Parser<A> =>
     }
     return { ok: false, input, value: `expected ${JSON.stringify(string)}` }
   })
+
+export const regex = (regex: RegExp): Parser<string> => {
+  const expected = `expected /${regex.source}/${regex.flags}`
+  regex = new RegExp(`^(?:${regex.source})`, regex.flags)
+  return new Parser((input: string) => {
+    const match = input.match(regex)?.[0]
+    if (match !== undefined)
+      return { ok: true, input: input.slice(match.length), value: match }
+    return { ok: false, input, value: expected }
+  })
+}
