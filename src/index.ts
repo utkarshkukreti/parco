@@ -30,6 +30,16 @@ export class Parser<A> {
       return r
     })
   }
+
+  or(a: Parser<A>): Parser<A> {
+    return new Parser(input => {
+      const r = this.fun(input)
+      if (r.ok) return r
+      const ra = a.fun(input)
+      if (ra.ok) return ra
+      return error(input, `${r.value} OR ${ra.value}`)
+    })
+  }
 }
 
 export type P<A> = A extends string

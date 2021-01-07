@@ -191,4 +191,58 @@ test('Parser.then()', () => {
   `)
 })
 
+test('Parser.or()', () => {
+  const abc = p.p<string>('a').or(p.p('b')).or(p.p(/c/i))
+
+  expect(abc.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\" OR expected \\"b\\" OR expected /c/i",
+    }
+  `)
+  expect(abc.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(abc.parse('b')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "b",
+    }
+  `)
+  expect(abc.parse('c')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "c",
+    }
+  `)
+  expect(abc.parse('C')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "C",
+    }
+  `)
+  expect(abc.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "input": "b",
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(abc.parse('Ca')).toMatchInlineSnapshot(`
+    Object {
+      "input": "a",
+      "ok": true,
+      "value": "C",
+    }
+  `)
+})
+
 const ignore = (..._args: unknown[]) => {}
