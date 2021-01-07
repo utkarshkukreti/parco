@@ -1,5 +1,3 @@
-import { sum } from '../src'
-
-test('sum', () => {
-  expect(sum(1, 2)).toEqual(3)
+test('1 + 2', () => {
+  expect(1 + 2).toEqual(3)
 })
