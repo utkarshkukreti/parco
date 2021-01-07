@@ -15,9 +15,8 @@ export class Parser<A> {
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
   return new Parser(input => {
-    if (input.startsWith(string))
-      return { ok: true, input: input.slice(string.length), value: string }
-    return { ok: false, input, value: expected }
+    if (input.startsWith(string)) return ok(input.slice(string.length), string)
+    return error(input, expected)
   })
 }
 
@@ -26,8 +25,19 @@ export const regex = (regex: RegExp): Parser<string> => {
   regex = new RegExp(`^(?:${regex.source})`, regex.flags)
   return new Parser((input: string) => {
     const match = input.match(regex)?.[0]
-    if (match !== undefined)
-      return { ok: true, input: input.slice(match.length), value: match }
-    return { ok: false, input, value: expected }
+    if (match !== undefined) return ok(input.slice(match.length), match)
+    return error(input, expected)
   })
 }
+
+export const ok = <A>(input: string, value: A): Ok<A> => ({
+  ok: true,
+  input,
+  value,
+})
+
+export const error = (input: string, value: string): Error => ({
+  ok: false,
+  input,
+  value,
+})
