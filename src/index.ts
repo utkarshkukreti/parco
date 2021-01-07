@@ -6,4 +6,8 @@ export type Error = { ok: false; input: string; value: string }
 
 export class Parser<A> {
   constructor(readonly fun: (input: string) => Result<A>) {}
+
+  parse(input: string): Result<A> {
+    return this.fun(input)
+  }
 }
