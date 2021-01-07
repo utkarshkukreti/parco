@@ -89,3 +89,5 @@ export const error = (input: string, value: string): Error => ({
   input,
   value,
 })
+
+export default p

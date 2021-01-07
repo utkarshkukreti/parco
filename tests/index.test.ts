@@ -1,4 +1,4 @@
-import * as p from '../src'
+import P, * as p from '../src'
 
 test('string', () => {
   const foo = p.string('foo')
@@ -103,13 +103,13 @@ test('regex', () => {
 })
 
 test('p', () => {
-  const foo: p.Parser<'foo'> = p.p('foo')
-  const bar: p.Parser<string> = p.p('bar')
-  const baz: p.Parser<string> = p.p(/baz/i)
-  const baz2: p.Parser<'baz'> = p.p(p.p('baz'))
+  const foo: p.Parser<'foo'> = P('foo')
+  const bar: p.Parser<string> = P('bar')
+  const baz: p.Parser<string> = P(/baz/i)
+  const baz2: p.Parser<'baz'> = P(P('baz'))
   try {
     // @ts-expect-error
-    p.p(123)
+    P(123)
   } catch {}
   ignore(foo, bar, baz, baz2)
 })
@@ -192,7 +192,7 @@ test('Parser.then()', () => {
 })
 
 test('Parser.or()', () => {
-  const abc = p.p<string>('a').or(p.p('b')).or(p.p(/c/i))
+  const abc = P<string>('a').or(P('b')).or(P(/c/i))
 
   expect(abc.parse('')).toMatchInlineSnapshot(`
     Object {
