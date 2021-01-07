@@ -1,8 +1,13 @@
 export type Result<A> = Ok<A> | Error
 
-export type Ok<A> = { ok: true; input: string; value: A }
+export type Ok<A> = { ok: true; input: string; consumed: boolean; value: A }
 
-export type Error = { ok: false; input: string; value: string }
+export type Error = {
+  ok: false
+  input: string
+  consumed: boolean
+  value: string
+}
 
 export class Parser<A> {
   constructor(readonly fun: (input: string) => Result<A>) {}
@@ -14,7 +19,7 @@ export class Parser<A> {
   map<B>(fun: (a: A) => B): Parser<B> {
     return new Parser(input => {
       const r = this.fun(input)
-      if (r.ok) return ok(r.input, fun(r.value))
+      if (r.ok) return ok(r.input, r.consumed, fun(r.value))
       return r
     })
   }
@@ -24,8 +29,9 @@ export class Parser<A> {
       const r = this.fun(input)
       if (r.ok) {
         const rb = b.fun(r.input)
-        if (rb.ok) return ok(rb.input, [r.value, rb.value])
-        return rb
+        if (rb.ok)
+          return ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
+        return error(rb.input, r.consumed || rb.consumed, rb.value)
       }
       return r
     })
@@ -34,10 +40,14 @@ export class Parser<A> {
   or(a: Parser<A>): Parser<A> {
     return new Parser(input => {
       const r = this.fun(input)
-      if (r.ok) return r
+      if (r.ok || r.consumed) return r
       const ra = a.fun(input)
-      if (ra.ok) return ra
-      return error(input, `${r.value} OR ${ra.value}`)
+      if (ra.ok || ra.consumed) return ra
+      return error(
+        input,
+        r.consumed || ra.consumed,
+        `${r.value} OR ${ra.value}`,
+      )
     })
   }
 }
@@ -63,8 +73,9 @@ export const p = <A extends IsP>(a: A): P<A> => {
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
   return new Parser(input => {
-    if (input.startsWith(string)) return ok(input.slice(string.length), string)
-    return error(input, expected)
+    if (input.startsWith(string))
+      return ok(input.slice(string.length), true, string)
+    return error(input, false, expected)
   })
 }
 
@@ -73,20 +84,26 @@ export const regex = (regex: RegExp): Parser<string> => {
   regex = new RegExp(`^(?:${regex.source})`, regex.flags)
   return new Parser((input: string) => {
     const match = input.match(regex)?.[0]
-    if (match !== undefined) return ok(input.slice(match.length), match)
-    return error(input, expected)
+    if (match !== undefined) return ok(input.slice(match.length), true, match)
+    return error(input, false, expected)
   })
 }
 
-export const ok = <A>(input: string, value: A): Ok<A> => ({
+export const ok = <A>(input: string, consumed: boolean, value: A): Ok<A> => ({
   ok: true,
   input,
+  consumed,
   value,
 })
 
-export const error = (input: string, value: string): Error => ({
+export const error = (
+  input: string,
+  consumed: boolean,
+  value: string,
+): Error => ({
   ok: false,
   input,
+  consumed,
   value,
 })
 

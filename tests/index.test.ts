@@ -5,6 +5,7 @@ test('string', () => {
 
   expect(foo.parse('')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "",
       "ok": false,
       "value": "expected \\"foo\\"",
@@ -12,6 +13,7 @@ test('string', () => {
   `)
   expect(foo.parse('f')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "f",
       "ok": false,
       "value": "expected \\"foo\\"",
@@ -19,6 +21,7 @@ test('string', () => {
   `)
   expect(foo.parse('foo')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "foo",
@@ -26,6 +29,7 @@ test('string', () => {
   `)
   expect(foo.parse('foo bar')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": " bar",
       "ok": true,
       "value": "foo",
@@ -37,6 +41,7 @@ test('regex', () => {
   const int = p.regex(/\d+/)
   expect(int.parse('')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -44,6 +49,7 @@ test('regex', () => {
   `)
   expect(int.parse('1')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "1",
@@ -51,6 +57,7 @@ test('regex', () => {
   `)
   expect(int.parse('123')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "123",
@@ -58,6 +65,7 @@ test('regex', () => {
   `)
   expect(int.parse(' 123')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": " 123",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -65,6 +73,7 @@ test('regex', () => {
   `)
   expect(int.parse('123 456')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": " 456",
       "ok": true,
       "value": "123",
@@ -72,6 +81,7 @@ test('regex', () => {
   `)
   expect(int.parse('abc')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "abc",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -81,6 +91,7 @@ test('regex', () => {
   const foo = p.regex(/foo/i)
   expect(foo.parse('FO o')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "FO o",
       "ok": false,
       "value": "expected /foo/i",
@@ -88,6 +99,7 @@ test('regex', () => {
   `)
   expect(foo.parse('FOo bar')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": " bar",
       "ok": true,
       "value": "FOo",
@@ -95,6 +107,7 @@ test('regex', () => {
   `)
   expect(foo.parse('a FOo bar')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "a FOo bar",
       "ok": false,
       "value": "expected /foo/i",
@@ -119,6 +132,7 @@ test('Parser.map()', () => {
 
   expect(int.parse('1')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": 1,
@@ -126,6 +140,7 @@ test('Parser.map()', () => {
   `)
   expect(int.parse('123')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": 123,
@@ -133,6 +148,7 @@ test('Parser.map()', () => {
   `)
   expect(int.parse(' 123')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": " 123",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -149,6 +165,7 @@ test('Parser.then()', () => {
 
   expect(expr.parse('')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -156,6 +173,7 @@ test('Parser.then()', () => {
   `)
   expect(expr.parse('1')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": false,
       "value": "expected \\"+\\"",
@@ -163,6 +181,7 @@ test('Parser.then()', () => {
   `)
   expect(expr.parse('1+')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": false,
       "value": "expected /\\\\d+/",
@@ -170,6 +189,7 @@ test('Parser.then()', () => {
   `)
   expect(expr.parse('1+23')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": 24,
@@ -177,6 +197,7 @@ test('Parser.then()', () => {
   `)
   expect(expr.parse('1+23+')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "+",
       "ok": true,
       "value": 24,
@@ -184,6 +205,7 @@ test('Parser.then()', () => {
   `)
   expect(expr.parse('1+23+456')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "+456",
       "ok": true,
       "value": 24,
@@ -196,6 +218,7 @@ test('Parser.or()', () => {
 
   expect(abc.parse('')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "",
       "ok": false,
       "value": "expected \\"a\\" OR expected \\"b\\" OR expected /c/i",
@@ -203,6 +226,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('a')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "a",
@@ -210,6 +234,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('b')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "b",
@@ -217,6 +242,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('c')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "c",
@@ -224,6 +250,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('C')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "C",
@@ -231,6 +258,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('ab')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "b",
       "ok": true,
       "value": "a",
@@ -238,6 +266,7 @@ test('Parser.or()', () => {
   `)
   expect(abc.parse('Ca')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "a",
       "ok": true,
       "value": "C",
@@ -252,6 +281,7 @@ test('Parser.or()', () => {
 
   expect(a.parse('')).toMatchInlineSnapshot(`
     Object {
+      "consumed": false,
       "input": "",
       "ok": false,
       "value": "expected \\"a\\" OR expected \\"a\\"",
@@ -259,13 +289,15 @@ test('Parser.or()', () => {
   `)
   expect(a.parse('a')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
-      "ok": true,
-      "value": "a",
+      "ok": false,
+      "value": "expected \\"b\\"",
     }
   `)
   expect(a.parse('ab')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "",
       "ok": true,
       "value": "ab",
@@ -273,6 +305,7 @@ test('Parser.or()', () => {
   `)
   expect(a.parse('abc')).toMatchInlineSnapshot(`
     Object {
+      "consumed": true,
       "input": "c",
       "ok": true,
       "value": "ab",
