@@ -11,3 +11,11 @@ export class Parser<A> {
     return this.fun(input)
   }
 }
+
+export const string = <A extends string>(string: A): Parser<A> =>
+  new Parser(input => {
+    if (input.startsWith(string)) {
+      return { ok: true, input: input.slice(string.length), value: string }
+    }
+    return { ok: false, input, value: `expected ${JSON.stringify(string)}` }
+  })
