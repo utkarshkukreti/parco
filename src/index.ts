@@ -40,7 +40,9 @@ export type P<A> = A extends string
   ? A
   : never
 
-export const p = <A>(a: A): P<A> => {
+export type IsP = string | RegExp | Parser<unknown>
+
+export const p = <A extends IsP>(a: A): P<A> => {
   if (typeof a === 'string') return string(a) as any
   if (a instanceof RegExp) return regex(a) as any
   if (a instanceof Parser) return a as any

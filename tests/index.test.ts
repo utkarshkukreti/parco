@@ -107,6 +107,10 @@ test('p', () => {
   const bar: p.Parser<string> = p.p('bar')
   const baz: p.Parser<string> = p.p(/baz/i)
   const baz2: p.Parser<'baz'> = p.p(p.p('baz'))
+  try {
+    // @ts-expect-error
+    p.p(123)
+  } catch {}
   ignore(foo, bar, baz, baz2)
 })
 
