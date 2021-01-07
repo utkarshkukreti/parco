@@ -127,3 +127,54 @@ test('Parser.map()', () => {
     }
   `)
 })
+
+test('Parser.then()', () => {
+  const int = p.regex(/\d+/).map(parseInt)
+  const expr = int
+    .then(p.string('+'))
+    .then(int)
+    .map(([[a, _], b]) => a + b)
+
+  expect(expr.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": false,
+      "value": "expected /\\\\d+/",
+    }
+  `)
+  expect(expr.parse('1')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": false,
+      "value": "expected \\"+\\"",
+    }
+  `)
+  expect(expr.parse('1+')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": false,
+      "value": "expected /\\\\d+/",
+    }
+  `)
+  expect(expr.parse('1+23')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": 24,
+    }
+  `)
+  expect(expr.parse('1+23+')).toMatchInlineSnapshot(`
+    Object {
+      "input": "+",
+      "ok": true,
+      "value": 24,
+    }
+  `)
+  expect(expr.parse('1+23+456')).toMatchInlineSnapshot(`
+    Object {
+      "input": "+456",
+      "ok": true,
+      "value": 24,
+    }
+  `)
+})

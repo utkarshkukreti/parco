@@ -18,6 +18,18 @@ export class Parser<A> {
       return r
     })
   }
+
+  then<B>(b: Parser<B>): Parser<[A, B]> {
+    return new Parser(input => {
+      const r = this.fun(input)
+      if (r.ok) {
+        const rb = b.fun(r.input)
+        if (rb.ok) return ok(rb.input, [r.value, rb.value])
+        return rb
+      }
+      return r
+    })
+  }
 }
 
 export const string = <A extends string>(string: A): Parser<A> => {
