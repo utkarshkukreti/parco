@@ -32,6 +32,22 @@ export class Parser<A> {
   }
 }
 
+export type P<A> = A extends string
+  ? Parser<A>
+  : A extends RegExp
+  ? Parser<string>
+  : A extends Parser<unknown>
+  ? A
+  : never
+
+export const p = <A>(a: A): P<A> => {
+  if (typeof a === 'string') return string(a) as any
+  if (a instanceof RegExp) return regex(a) as any
+  if (a instanceof Parser) return a as any
+
+  throw new Error('unreachable')
+}
+
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
   return new Parser(input => {

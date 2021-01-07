@@ -102,6 +102,14 @@ test('regex', () => {
   `)
 })
 
+test('p', () => {
+  const foo: p.Parser<'foo'> = p.p('foo')
+  const bar: p.Parser<string> = p.p('bar')
+  const baz: p.Parser<string> = p.p(/baz/i)
+  const baz2: p.Parser<'baz'> = p.p(p.p('baz'))
+  ignore(foo, bar, baz, baz2)
+})
+
 test('Parser.map()', () => {
   const int = p.regex(/\d+/).map(parseInt)
 
@@ -178,3 +186,5 @@ test('Parser.then()', () => {
     }
   `)
 })
+
+const ignore = (..._args: unknown[]) => {}
