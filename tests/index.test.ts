@@ -243,6 +243,41 @@ test('Parser.or()', () => {
       "value": "C",
     }
   `)
+
+  const a = P(
+    P('a')
+      .then(P('b'))
+      .map(([a, b]) => a + b),
+  ).or(P('a'))
+
+  expect(a.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\" OR expected \\"a\\"",
+    }
+  `)
+  expect(a.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(a.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": "ab",
+    }
+  `)
+  expect(a.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "input": "c",
+      "ok": true,
+      "value": "ab",
+    }
+  `)
 })
 
 const ignore = (..._args: unknown[]) => {}
