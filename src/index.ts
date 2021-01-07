@@ -10,6 +10,14 @@ export class Parser<A> {
   parse(input: string): Result<A> {
     return this.fun(input)
   }
+
+  map<B>(fun: (a: A) => B): Parser<B> {
+    return new Parser(input => {
+      const r = this.fun(input)
+      if (r.ok) return ok(r.input, fun(r.value))
+      return r
+    })
+  }
 }
 
 export const string = <A extends string>(string: A): Parser<A> => {

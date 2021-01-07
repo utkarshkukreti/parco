@@ -101,3 +101,29 @@ test('regex', () => {
     }
   `)
 })
+
+test('Parser.map()', () => {
+  const int = p.regex(/\d+/).map(parseInt)
+
+  expect(int.parse('1')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": 1,
+    }
+  `)
+  expect(int.parse('123')).toMatchInlineSnapshot(`
+    Object {
+      "input": "",
+      "ok": true,
+      "value": 123,
+    }
+  `)
+  expect(int.parse(' 123')).toMatchInlineSnapshot(`
+    Object {
+      "input": " 123",
+      "ok": false,
+      "value": "expected /\\\\d+/",
+    }
+  `)
+})
