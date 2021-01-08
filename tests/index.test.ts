@@ -1,3 +1,8 @@
+import * as fs from 'fs'
+
+import * as globby from 'globby'
+
+import Json from '../examples/json'
 import P, * as p from '../src'
 
 test('string', () => {
@@ -642,6 +647,32 @@ test('lazy', () => {
       ],
     }
   `)
+})
+
+describe('examples', () => {
+  test('json', () => {
+    const ys = globby.sync('node_modules/json-test-suite/test_parsing/y_*.json')
+    const ns = globby.sync('node_modules/json-test-suite/test_parsing/n_*.json')
+
+    expect(ys).toHaveLength(95)
+    expect(ns).toHaveLength(188)
+
+    for (const file of ys) {
+      const input = fs.readFileSync(file, 'utf-8').trim()
+      expect(Json(input)).toBeTruthy()
+    }
+
+    for (const file of ns) {
+      const input = fs.readFileSync(file, 'utf-8').trim()
+      // Some of these may throw an error due to stack overflow while parsing,
+      // which is fine.
+      let ok = true
+      try {
+        ok = Json(input) === null
+      } catch {}
+      expect(ok).toBeTruthy()
+    }
+  })
 })
 
 const ignore = (..._args: unknown[]) => {}

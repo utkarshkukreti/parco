@@ -3107,7 +3107,7 @@ globalyzer@0.1.0:
   resolved "https://registry.yarnpkg.com/globalyzer/-/globalyzer-0.1.0.tgz#cb76da79555669a1519d5a8edf093afaa0bf1465"
   integrity sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==
 
-globby@^11.0.1:
+globby@^11.0.1, globby@^11.0.2:
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/globby/-/globby-11.0.2.tgz#1af538b766a3b540ebfb58a32b2e2d5897321d83"
   integrity sha512-2ZThXDvvV8fYFRVIxnrMQBipZQDr7MxKAmQK1vujaj9/7eF0efG7BPUKJ7jP7G5SLF37xKDXvO4S/KKLj/Z0og==
@@ -4222,6 +4222,11 @@ json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
+
+json-test-suite@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/json-test-suite/-/json-test-suite-0.1.0.tgz#53116f0b767ea44dba0b8d14e7dec11f60f8928b"
+  integrity sha512-2bCOLCMiRUBsD5OkK4IaiiYkXGfDVfy1Pwl1ma+X0LCsCk8SE6GTj6gl413bSFjZb5YeOHWSjVe77ueY1UNgqg==
 
 json5@2.x, json5@^2.1.1, json5@^2.1.2:
   version "2.1.3"
