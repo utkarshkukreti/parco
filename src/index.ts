@@ -58,6 +58,19 @@ export class Parser<A> {
       )
     })
   }
+
+  array(): Parser<A[]> {
+    return new Parser(input => {
+      const value = []
+      for (;;) {
+        const r = this.fun(input)
+        if (r.ok) value.push(r.value)
+        else if (!r.consumed) return ok(r.input, value.length > 0, value)
+        else return r
+        input = r.input
+      }
+    })
+  }
 }
 
 export type P<A> = A extends string

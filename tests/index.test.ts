@@ -415,6 +415,86 @@ test('Parser.or()', () => {
   `)
 })
 
+test('Parser.array()', () => {
+  const abs: p.Parser<['a', 'b'][]> = P('a').then(P('b')).array()
+
+  expect(abs.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": true,
+      "value": Array [],
+    }
+  `)
+  expect(abs.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(abs.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        Array [
+          "a",
+          "b",
+        ],
+      ],
+    }
+  `)
+  expect(abs.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "c",
+      "ok": true,
+      "value": Array [
+        Array [
+          "a",
+          "b",
+        ],
+      ],
+    }
+  `)
+  expect(abs.parse('aba')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(abs.parse('abab')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        Array [
+          "a",
+          "b",
+        ],
+        Array [
+          "a",
+          "b",
+        ],
+      ],
+    }
+  `)
+  expect(abs.parse('ababa')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+})
+
 test('lazy', () => {
   const ab = P('a').then(p.lazy(() => b))
   const b = P('b')
