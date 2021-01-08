@@ -59,15 +59,26 @@ export class Parser<A> {
     })
   }
 
-  array(): Parser<A[]> {
+  array({ join }: { join?: Parser<unknown> } = {}): Parser<A[]> {
     return new Parser(input => {
       const value = []
-      for (;;) {
-        const r = this.fun(input)
-        if (r.ok) value.push(r.value)
-        else if (!r.consumed) return ok(r.input, value.length > 0, value)
-        else return r
-        input = r.input
+      for (let i = 0; ; i++) {
+        if (join && i > 0) {
+          const r1 = join.fun(input)
+          if (r1.ok) {
+          } else if (!r1.consumed) return ok(r1.input, value.length > 0, value)
+          else return r1
+          const r = this.fun(r1.input)
+          if (r.ok) value.push(r.value)
+          else return r
+          input = r.input
+        } else {
+          const r = this.fun(input)
+          if (r.ok) value.push(r.value)
+          else if (!r.consumed) return ok(r.input, value.length > 0, value)
+          else return r
+          input = r.input
+        }
       }
     })
   }

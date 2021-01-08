@@ -493,6 +493,111 @@ test('Parser.array()', () => {
       "value": "expected \\"b\\"",
     }
   `)
+
+  const as: p.Parser<'a'[]> = P('a').array({ join: P(';').then(P(';')) })
+
+  expect(as.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": true,
+      "value": Array [],
+    }
+  `)
+  expect(as.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        "a",
+      ],
+    }
+  `)
+  expect(as.parse('az')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "z",
+      "ok": true,
+      "value": Array [
+        "a",
+      ],
+    }
+  `)
+  expect(as.parse('a;')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\";\\"",
+    }
+  `)
+  expect(as.parse('a;;')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(as.parse('a;;a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        "a",
+        "a",
+      ],
+    }
+  `)
+  expect(as.parse('a;;az')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "z",
+      "ok": true,
+      "value": Array [
+        "a",
+        "a",
+      ],
+    }
+  `)
+  expect(as.parse('a;;a;')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\";\\"",
+    }
+  `)
+  expect(as.parse('a;;a;;')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(as.parse('a;;a;;a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        "a",
+        "a",
+        "a",
+      ],
+    }
+  `)
+  expect(as.parse('a;;a;;a;')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\";\\"",
+    }
+  `)
 })
 
 test('lazy', () => {
