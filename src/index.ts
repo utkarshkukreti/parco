@@ -97,6 +97,9 @@ export const regex = (regex: RegExp): Parser<string> => {
   })
 }
 
+export const lazy = <A>(p: () => Parser<A>): Parser<A> =>
+  new Parser(input => p().fun(input))
+
 export const ok = <A>(input: string, consumed: boolean, value: A): Ok<A> => ({
   ok: true,
   input,

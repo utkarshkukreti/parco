@@ -415,4 +415,48 @@ test('Parser.or()', () => {
   `)
 })
 
+test('lazy', () => {
+  const ab = P('a').then(p.lazy(() => b))
+  const b = P('b')
+
+  expect(ab.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(ab.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(ab.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+  expect(ab.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "c",
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+})
+
 const ignore = (..._args: unknown[]) => {}
