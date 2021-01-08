@@ -213,6 +213,109 @@ test('Parser.then()', () => {
   `)
 })
 
+test('Parser.thenSkip() / Parser.skipThen()', () => {
+  const a: p.Parser<'a'> = P('a').thenSkip(P('b'))
+  const b: p.Parser<'b'> = P('a').skipThen(P('b'))
+  const ab: p.Parser<['a', 'b']> = P('z')
+    .skipThen(P('a'))
+    .thenSkip(P('z'))
+    .then(P('b'))
+
+  expect(a.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(a.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(a.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": "a",
+    }
+  `)
+
+  expect(b.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(b.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(b.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": "b",
+    }
+  `)
+
+  expect(ab.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"z\\"",
+    }
+  `)
+  expect(ab.parse('z')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(ab.parse('za')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"z\\"",
+    }
+  `)
+  expect(ab.parse('zaz')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected \\"b\\"",
+    }
+  `)
+  expect(ab.parse('zazb')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+})
+
 test('Parser.or()', () => {
   const abc = P<string>('a').or(P('b')).or(P(/c/i))
 

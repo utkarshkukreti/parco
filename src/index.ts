@@ -37,6 +37,14 @@ export class Parser<A> {
     })
   }
 
+  thenSkip<B>(b: Parser<B>): Parser<A> {
+    return this.then(b).map(r => r[0])
+  }
+
+  skipThen<B>(b: Parser<B>): Parser<B> {
+    return this.then(b).map(r => r[1])
+  }
+
   or(a: Parser<A>): Parser<A> {
     return new Parser(input => {
       const r = this.fun(input)
