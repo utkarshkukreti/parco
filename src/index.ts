@@ -111,7 +111,8 @@ export const string = <A extends string>(string: A): Parser<A> => {
   })
 }
 
-export const regex = (regex: RegExp): Parser<string> => {
+export const regex = (arg: RegExp | string): Parser<string> => {
+  let regex = typeof arg === 'string' ? new RegExp(arg) : arg
   const expected = `expected /${regex.source}/${regex.flags}`
   regex = new RegExp(`^(?:${regex.source})`, regex.flags)
   return new Parser((input: string) => {
