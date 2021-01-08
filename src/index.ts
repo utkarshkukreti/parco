@@ -32,13 +32,11 @@ export class Parser<A> {
   then<B>(b: Parser<B>): Parser<[A, B]> {
     return new Parser(input => {
       const r = this.fun(input)
-      if (r.ok) {
-        const rb = b.fun(r.input)
-        if (rb.ok)
-          return ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
-        return error(rb.input, r.consumed || rb.consumed, rb.value)
-      }
-      return r
+      if (!r.ok) return r
+      const rb = b.fun(r.input)
+      if (rb.ok)
+        return ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
+      return error(rb.input, r.consumed || rb.consumed, rb.value)
     })
   }
 
