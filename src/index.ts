@@ -1,6 +1,11 @@
 export type Result<A> = Ok<A> | Error
 
-export type Ok<A> = { ok: true; input: string; consumed: boolean; value: A }
+export type Ok<A> = {
+  ok: true
+  input: string
+  consumed: boolean
+  value: A
+}
 
 export type Error = {
   ok: false
