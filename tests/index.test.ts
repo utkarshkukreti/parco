@@ -273,11 +273,10 @@ test('Parser.or()', () => {
     }
   `)
 
-  const a = P(
-    P('a')
-      .then(P('b'))
-      .map(([a, b]) => a + b),
-  ).or(P('a'))
+  const a = P('a')
+    .then(P('b'))
+    .map(([a, b]) => a + b)
+    .or(P('a'))
 
   expect(a.parse('')).toMatchInlineSnapshot(`
     Object {
