@@ -1,1 +1,2 @@
+/benchmarks/json.sample.ts -diff
 /yarn.lock -diff

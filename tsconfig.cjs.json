@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "outDir": "dist",
+    "noEmit": false
+  },
+  "extends": "./tsconfig.json",
+  "include": ["benchmarks", "examples", "src", "types"]
+}
