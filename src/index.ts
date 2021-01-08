@@ -120,7 +120,7 @@ export const regex = (arg: RegExp | string): Parser<string> => {
   let regex = typeof arg === 'string' ? new RegExp(arg) : arg
   const expected = `expected /${regex.source}/${regex.flags}`
   regex = new RegExp(`^(?:${regex.source})`, regex.flags)
-  return new Parser((input: string) => {
+  return new Parser(input => {
     const match = input.match(regex)?.[0]
     if (match !== undefined) return ok(input.slice(match.length), true, match)
     return error(input, false, expected)
