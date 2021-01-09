@@ -98,9 +98,9 @@ export type P<A> = A extends string
 export type IsP = string | RegExp | Parser<unknown>
 
 export const p = <A extends IsP>(a: A): P<A> => {
-  if (typeof a === 'string') return string(a) as any
-  if (a instanceof RegExp) return regex(a) as any
-  if (a instanceof Parser) return a as any
+  if (typeof a === 'string') return string(a) as P<A>
+  if (a instanceof RegExp) return regex(a) as P<A>
+  if (a instanceof Parser) return a as P<A>
 
   throw new Error('unreachable')
 }
