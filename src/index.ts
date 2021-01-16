@@ -159,9 +159,10 @@ export const string = <A extends string>(string: A): Parser<A> => {
 export const regex = (arg: RegExp | string): Parser<string> => {
   let regex = typeof arg === 'string' ? new RegExp(arg) : arg
   const expected = `expected /${regex.source}/${regex.flags}`
-  regex = new RegExp(`^(?:${regex.source})`, regex.flags)
+  regex = new RegExp(regex.source, regex.flags + 'y')
   return new Parser((input, index) => {
-    const match = input.slice(index).match(regex)?.[0]
+    regex.lastIndex = index
+    const match = regex.exec(input)?.[0]
     if (match !== undefined) return Ok(index + match.length, match)
     return Error(index, expected)
   })
