@@ -97,13 +97,12 @@ export type P<A> = A extends string
 
 export type IsP = string | RegExp | Parser<unknown>
 
-export const p = <A extends IsP>(a: A): P<A> => {
-  if (typeof a === 'string') return string(a) as P<A>
-  if (a instanceof RegExp) return regex(a) as P<A>
-  if (a instanceof Parser) return a as P<A>
-
-  throw new Error('unreachable')
-}
+export const p = <A extends IsP>(a: A): P<A> =>
+  (typeof a === 'string'
+    ? string(a)
+    : a instanceof RegExp
+    ? regex(a)
+    : a) as P<A>
 
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
