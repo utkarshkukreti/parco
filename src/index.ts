@@ -15,8 +15,8 @@ export type Error = {
 export class Parser<A, Input = string> {
   constructor(readonly fun: (input: Input, index: number) => Result<A>) {}
 
-  parse(input: Input): Result<A> {
-    return this.fun(input, 0)
+  parse(input: Input, index = 0): Result<A> {
+    return this.fun(input, index)
   }
 
   map<B>(fun: (a: A) => B): Parser<B, Input> {
