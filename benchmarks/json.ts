@@ -3,7 +3,7 @@ import * as Benchmark from 'benchmark'
 import Json from '../examples/json'
 import Sample from './json.sample'
 
-const times = +(process.argv[2] || '1')
+const times = +(process.argv[2] || '5')
 
 const inputs: string[] = [Sample]
 
