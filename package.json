@@ -12,7 +12,7 @@
     "build": "tsdx build --format cjs,esm,umd",
     "test": "tsdx test",
     "prepare": "yarn build",
-    "format": "prettier --write . --ignore-path .gitignore",
+    "format": "prettier --write .",
     "bench:json": "tsc -P tsconfig.cjs.json && node dist/benchmarks/json.js"
   },
   "devDependencies": {
