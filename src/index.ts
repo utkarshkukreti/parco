@@ -87,22 +87,18 @@ export class Parser<A> {
   }
 }
 
-export type P<A> = A extends string
-  ? Parser<A>
-  : A extends RegExp
-  ? Parser<string>
-  : A extends Parser<unknown>
-  ? A
-  : never
+export type P = {
+  <A extends string>(a: A): Parser<A>
+  (a: RegExp): Parser<string>
+  <A>(a: Parser<A>): Parser<A>
+}
 
-export type IsP = string | RegExp | Parser<unknown>
-
-export const p = <A extends IsP>(a: A): P<A> =>
+export const p: P = (a: unknown) =>
   (typeof a === 'string'
     ? string(a)
     : a instanceof RegExp
     ? regex(a)
-    : a) as P<A>
+    : a) as any
 
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
