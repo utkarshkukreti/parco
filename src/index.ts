@@ -57,9 +57,8 @@ export class Parser<A> {
       const r = this.fun(input)
       if (!r.ok) return r
       const rb = b.fun(r.input)
-      if (rb.ok)
-        return Ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
-      return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      if (!rb.ok) return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      return Ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
     })
   }
 
@@ -68,8 +67,8 @@ export class Parser<A> {
       const r = this.fun(input)
       if (!r.ok) return r
       const rb = b.fun(r.input)
-      if (rb.ok) return Ok(rb.input, r.consumed || rb.consumed, r.value)
-      return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      if (!rb.ok) return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      return Ok(rb.input, r.consumed || rb.consumed, r.value)
     })
   }
 
@@ -78,8 +77,8 @@ export class Parser<A> {
       const r = this.fun(input)
       if (!r.ok) return r
       const rb = b.fun(r.input)
-      if (rb.ok) return Ok(rb.input, r.consumed || rb.consumed, rb.value)
-      return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      if (!rb.ok) return Error(rb.input, r.consumed || rb.consumed, rb.value)
+      return Ok(rb.input, r.consumed || rb.consumed, rb.value)
     })
   }
 
