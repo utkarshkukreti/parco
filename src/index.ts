@@ -12,14 +12,14 @@ export type Error = {
   value: string
 }
 
-export class Parser<A> {
-  constructor(readonly fun: (input: string, index: number) => Result<A>) {}
+export class Parser<A, Input = string> {
+  constructor(readonly fun: (input: Input, index: number) => Result<A>) {}
 
-  parse(input: string): Result<A> {
+  parse(input: Input): Result<A> {
     return this.fun(input, 0)
   }
 
-  map<B>(fun: (a: A) => B): Parser<B> {
+  map<B>(fun: (a: A) => B): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) return Ok(r.index, fun(r.value))
@@ -27,7 +27,7 @@ export class Parser<A> {
     })
   }
 
-  filter(fun: (a: A) => boolean, error: string): Parser<A> {
+  filter(fun: (a: A) => boolean, error: string): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
@@ -38,7 +38,7 @@ export class Parser<A> {
     })
   }
 
-  filterMap<B>(fun: (a: A) => B | null, error: string): Parser<B> {
+  filterMap<B>(fun: (a: A) => B | null, error: string): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
@@ -50,7 +50,7 @@ export class Parser<A> {
     })
   }
 
-  then<B>(b: Parser<B>): Parser<[A, B]> {
+  then<B>(b: Parser<B, Input>): Parser<[A, B], Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -60,7 +60,7 @@ export class Parser<A> {
     })
   }
 
-  thenSkip<B>(b: Parser<B>): Parser<A> {
+  thenSkip<B>(b: Parser<B, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -70,7 +70,7 @@ export class Parser<A> {
     })
   }
 
-  skipThen<B>(b: Parser<B>): Parser<B> {
+  skipThen<B>(b: Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -78,7 +78,7 @@ export class Parser<A> {
     })
   }
 
-  or(a: Parser<A>): Parser<A> {
+  or(a: Parser<A, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
@@ -88,7 +88,7 @@ export class Parser<A> {
     })
   }
 
-  array({ join }: { join?: Parser<unknown> } = {}): Parser<A[]> {
+  array({ join }: { join?: Parser<unknown, Input> } = {}): Parser<A[], Input> {
     return new Parser((input, index) => {
       const value = []
       for (let i = 0; ; i++) {
@@ -115,18 +115,21 @@ export class Parser<A> {
 }
 
 export type P = {
-  <A>(a: (input: string, index: number) => Result<A>): Parser<A>
-  <A extends string>(a: A): Parser<A>
-  (a: RegExp): Parser<string>
-  <A>(a: Parser<A>): Parser<A>
+  <A, Input = string>(a: (input: Input, index: number) => Result<A>): Parser<
+    A,
+    Input
+  >
+  <A extends string>(a: A): Parser<A, string>
+  (a: RegExp): Parser<string, string>
+  <A, Input = string>(a: Parser<A, Input>): Parser<A, Input>
 }
 
-export const p: P = <A>(
+export const p: P = <A, Input>(
   a:
-    | ((input: string, index: number) => Result<A>)
+    | ((input: Input, index: number) => Result<A>)
     | string
     | RegExp
-    | Parser<A>,
+    | Parser<A, Input>,
 ) =>
   typeof a === 'function'
     ? new Parser(a)
@@ -156,7 +159,7 @@ export const regex = (arg: RegExp | string): Parser<string> => {
   })
 }
 
-export const lazy = <A>(p: () => Parser<A>): Parser<A> =>
+export const lazy = <A, Input>(p: () => Parser<A, Input>): Parser<A, Input> =>
   new Parser((input, index) => p().fun(input, index))
 
 export const Ok = <A>(index: number, value: A): Ok<A> => ({
