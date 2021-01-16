@@ -24,7 +24,7 @@ export class Parser<A> {
   map<B>(fun: (a: A) => B): Parser<B> {
     return new Parser(input => {
       const r = this.fun(input)
-      if (r.ok) return ok(r.input, r.consumed, fun(r.value))
+      if (r.ok) return Ok(r.input, r.consumed, fun(r.value))
       return r
     })
   }
@@ -35,8 +35,8 @@ export class Parser<A> {
       if (!r.ok) return r
       const rb = b.fun(r.input)
       if (rb.ok)
-        return ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
-      return error(rb.input, r.consumed || rb.consumed, rb.value)
+        return Ok(rb.input, r.consumed || rb.consumed, [r.value, rb.value])
+      return Error(rb.input, r.consumed || rb.consumed, rb.value)
     })
   }
 
@@ -54,7 +54,7 @@ export class Parser<A> {
       if (r.ok || r.consumed) return r
       const ra = a.fun(input)
       if (ra.ok || ra.consumed) return ra
-      return error(
+      return Error(
         input,
         r.consumed || ra.consumed,
         `${r.value} OR ${ra.value}`,
@@ -69,7 +69,7 @@ export class Parser<A> {
         if (join && i > 0) {
           const r1 = join.fun(input)
           if (r1.ok) {
-          } else if (!r1.consumed) return ok(r1.input, value.length > 0, value)
+          } else if (!r1.consumed) return Ok(r1.input, value.length > 0, value)
           else return r1
           const r = this.fun(r1.input)
           if (r.ok) value.push(r.value)
@@ -78,7 +78,7 @@ export class Parser<A> {
         } else {
           const r = this.fun(input)
           if (r.ok) value.push(r.value)
-          else if (!r.consumed) return ok(r.input, value.length > 0, value)
+          else if (!r.consumed) return Ok(r.input, value.length > 0, value)
           else return r
           input = r.input
         }
@@ -100,8 +100,8 @@ export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
   return new Parser(input => {
     if (input.startsWith(string))
-      return ok(input.slice(string.length), true, string)
-    return error(input, false, expected)
+      return Ok(input.slice(string.length), true, string)
+    return Error(input, false, expected)
   })
 }
 
@@ -111,22 +111,22 @@ export const regex = (arg: RegExp | string): Parser<string> => {
   regex = new RegExp(`^(?:${regex.source})`, regex.flags)
   return new Parser(input => {
     const match = input.match(regex)?.[0]
-    if (match !== undefined) return ok(input.slice(match.length), true, match)
-    return error(input, false, expected)
+    if (match !== undefined) return Ok(input.slice(match.length), true, match)
+    return Error(input, false, expected)
   })
 }
 
 export const lazy = <A>(p: () => Parser<A>): Parser<A> =>
   new Parser(input => p().fun(input))
 
-export const ok = <A>(input: string, consumed: boolean, value: A): Ok<A> => ({
+export const Ok = <A>(input: string, consumed: boolean, value: A): Ok<A> => ({
   ok: true,
   input,
   consumed,
   value,
 })
 
-export const error = (
+export const Error = (
   input: string,
   consumed: boolean,
   value: string,
