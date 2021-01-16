@@ -40,6 +40,18 @@ export class Parser<A> {
     })
   }
 
+  filterMap<B>(fun: (a: A) => B | null, error: string): Parser<B> {
+    return new Parser(input => {
+      const r = this.fun(input)
+      if (r.ok) {
+        const value = fun(r.value)
+        if (value !== null) return Ok(r.input, r.consumed, value)
+        return Error(r.input, r.consumed, error)
+      }
+      return r
+    })
+  }
+
   then<B>(b: Parser<B>): Parser<[A, B]> {
     return new Parser(input => {
       const r = this.fun(input)
