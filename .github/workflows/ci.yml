@@ -17,6 +17,6 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn test --coverage
-      - run: yarn bench:json
       - run: yarn format --check
       - run: yarn lint
+      - run: yarn bench:json
