@@ -112,7 +112,7 @@ test('p', () => {
   const bar: p.Parser<string> = P('bar')
   const baz: p.Parser<string> = P(/baz/i)
   const baz2: p.Parser<'baz'> = P(P('baz'))
-  const baz3: p.Parser<'baz'> = P((input, index) => p.Ok(index, 'baz'))
+  const baz3: p.Parser<'baz'> = P((_, index) => p.Ok(index, 'baz'))
   try {
     // @ts-expect-error
     P(123)
