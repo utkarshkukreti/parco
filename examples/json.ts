@@ -20,11 +20,7 @@ const Object_: p.Parser<[string, Value][]> = ch('\\{')
   )
   .thenSkip(ch('\\}'))
 
-const Value = P<p.Parser<Value>>(String)
-  .or(Keyword)
-  .or(Number)
-  .or(Array)
-  .or(Object_)
+const Value = P<Value>(String).or(Keyword).or(Number).or(Array).or(Object_)
 
 export default (string: string): Value | null => {
   string = string.trim()
