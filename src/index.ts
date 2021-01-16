@@ -93,12 +93,8 @@ export type P = {
   <A>(a: Parser<A>): Parser<A>
 }
 
-export const p: P = (a: unknown) =>
-  (typeof a === 'string'
-    ? string(a)
-    : a instanceof RegExp
-    ? regex(a)
-    : a) as any
+export const p: P = <A>(a: string | RegExp | Parser<A>) =>
+  typeof a === 'string' ? string(a) : a instanceof RegExp ? regex(a) : a
 
 export const string = <A extends string>(string: A): Parser<A> => {
   const expected = `expected ${JSON.stringify(string)}`
