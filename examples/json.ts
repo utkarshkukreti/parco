@@ -15,17 +15,15 @@ const Value = p.or<Value>([
   p.lazy(() => Array.or(Object_)),
 ])
 
-const Array: p.Parser<Value[]> = ch('\\[')
-  .skipThen(Value.array({ join: ch(',') }))
-  .thenSkip(ch('\\]'))
+const Array: p.Parser<Value[]> = Value.array({ join: ch(',') }).wrap(
+  ch('\\['),
+  ch('\\]'),
+)
 
-const Object_: p.Parser<[string, Value][]> = ch('\\{')
-  .skipThen(
-    String.thenSkip(ch(':'))
-      .then(Value)
-      .array({ join: ch(',') }),
-  )
-  .thenSkip(ch('\\}'))
+const Object_: p.Parser<[string, Value][]> = String.thenSkip(ch(':'))
+  .then(Value)
+  .array({ join: ch(',') })
+  .wrap(ch('\\{'), ch('\\}'))
 
 export default (string: string): Value | null => {
   string = string.trim()

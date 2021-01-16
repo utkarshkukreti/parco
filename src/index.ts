@@ -86,6 +86,18 @@ export class Parser<A, Input = string> {
     })
   }
 
+  wrap(a: Parser<unknown, Input>, b: Parser<unknown, Input>): Parser<A, Input> {
+    return new Parser((input, index) => {
+      const ra = a.fun(input, index)
+      if (!ra.ok) return ra
+      const r = this.fun(input, ra.index)
+      if (!r.ok) return r
+      const rb = b.fun(input, r.index)
+      if (!rb.ok) return rb
+      return Ok(rb.index, r.value)
+    })
+  }
+
   or(a: Parser<A, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
