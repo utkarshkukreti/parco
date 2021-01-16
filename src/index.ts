@@ -175,13 +175,13 @@ export const or = <A, Input = string>(
   ps: Parser<A, Input>[],
 ): Parser<A, Input> => {
   return new Parser((input, index) => {
-    const error = []
+    const errors = []
     for (const p of ps) {
       const r = p.fun(input, index)
       if (r.ok || r.index > index) return r
-      error.push(r.value)
+      errors.push(r.value)
     }
-    return Error(index, error.join(' OR '))
+    return Error(index, errors.join(' OR '))
   })
 }
 
