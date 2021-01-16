@@ -8,19 +8,24 @@ const Number = P(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)
 
 const ch = (string: string) => p.regex(`[ \t\r\n]*${string}[ \t\r\n]*`)
 
+const Value = p.or<Value>([
+  String,
+  Keyword,
+  Number,
+  p.lazy(() => Array.or(Object_)),
+])
+
 const Array: p.Parser<Value[]> = ch('\\[')
-  .skipThen(p.lazy(() => Value).array({ join: ch(',') }))
+  .skipThen(Value.array({ join: ch(',') }))
   .thenSkip(ch('\\]'))
 
 const Object_: p.Parser<[string, Value][]> = ch('\\{')
   .skipThen(
     String.thenSkip(ch(':'))
-      .then(p.lazy(() => Value))
+      .then(Value)
       .array({ join: ch(',') }),
   )
   .thenSkip(ch('\\}'))
-
-const Value = p.or<Value>([String, Keyword, Number, Array, Object_])
 
 export default (string: string): Value | null => {
   string = string.trim()
