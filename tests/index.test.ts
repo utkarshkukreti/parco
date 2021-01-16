@@ -150,7 +150,7 @@ test('Parser.filter()', () => {
   const odd = p
     .regex(/\d+/)
     .map(parseInt)
-    .filter(n => n % 2 == 1, 'expected an odd integer')
+    .filter(n => n % 2 === 1, 'expected an odd integer')
 
   expect(odd.parse('1')).toMatchInlineSnapshot(`
     Object {
@@ -190,7 +190,7 @@ test('Parser.filterMap()', () => {
     .regex(/\d+/)
     .map(parseInt)
     .filterMap(
-      n => (n % 2 == 1 ? `${n} is odd!` : null),
+      n => (n % 2 === 1 ? `${n} is odd!` : null),
       'expected an odd integer',
     )
 
