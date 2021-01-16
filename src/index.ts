@@ -68,7 +68,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  thenSkip<B>(b: Parser<B, Input>): Parser<A, Input> {
+  thenSkip(b: Parser<unknown, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
