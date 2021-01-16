@@ -29,6 +29,17 @@ export class Parser<A> {
     })
   }
 
+  filter(fun: (a: A) => boolean, error: string): Parser<A> {
+    return new Parser(input => {
+      const r = this.fun(input)
+      if (r.ok) {
+        if (fun(r.value)) return Ok(r.input, r.consumed, r.value)
+        return Error(r.input, r.consumed, error)
+      }
+      return r
+    })
+  }
+
   then<B>(b: Parser<B>): Parser<[A, B]> {
     return new Parser(input => {
       const r = this.fun(input)

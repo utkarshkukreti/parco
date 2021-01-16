@@ -161,6 +161,49 @@ test('Parser.map()', () => {
   `)
 })
 
+test('Parser.filter()', () => {
+  const odd = p
+    .regex(/\d+/)
+    .map(parseInt)
+    .filter(n => n % 2 == 1, 'expected an odd integer')
+
+  expect(odd.parse('1')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": 1,
+    }
+  `)
+
+  expect(odd.parse('12')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": false,
+      "value": "expected an odd integer",
+    }
+  `)
+
+  expect(odd.parse('123')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": true,
+      "input": "",
+      "ok": true,
+      "value": 123,
+    }
+  `)
+
+  expect(odd.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "consumed": false,
+      "input": "abc",
+      "ok": false,
+      "value": "expected /\\\\d+/",
+    }
+  `)
+})
+
 test('Parser.then()', () => {
   const int = p.regex(/\d+/).map(parseInt)
   const expr = int
