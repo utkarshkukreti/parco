@@ -120,6 +120,10 @@ export class Parser<A, Input = string> {
       }
     })
   }
+
+  pipe<B>(fun: (_: this) => B): B {
+    return fun(this)
+  }
 }
 
 export type P = {

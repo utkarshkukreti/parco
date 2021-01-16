@@ -672,6 +672,11 @@ test('Parser.array()', () => {
   `)
 })
 
+test('Parser.pipe()', () => {
+  const bar: p.Parser<'bar'> = P('foo').pipe(foo => foo.map(() => 'bar'))
+  ignore(bar)
+})
+
 test('lazy', () => {
   const ab = P('a').then(p.lazy(() => b))
   const b = P('b')
