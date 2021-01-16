@@ -31,7 +31,7 @@ export class Parser<A> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
-        if (fun(r.value)) return Ok(r.index, r.value)
+        if (fun(r.value)) return r
         return Error(r.index, error)
       }
       return r
