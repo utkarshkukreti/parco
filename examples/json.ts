@@ -23,7 +23,6 @@ const Object_: p.Parser<[string, Value][]> = ch('\\{')
 const Value = P<Value>(String).or(Keyword).or(Number).or(Array).or(Object_)
 
 export default (string: string): Value | null => {
-  string = string.trim()
-  const r = Value.parse(string)
+  const r = Value.parse(string.trim())
   return r.ok && r.input === '' ? r.value : null
 }
