@@ -13,11 +13,13 @@
     "test": "tsdx test",
     "prepare": "yarn build",
     "format": "prettier --write .",
-    "bench:json": "tsc -P tsconfig.cjs.json && node dist/benchmarks/json.js"
+    "bench:json": "tsc -P tsconfig.cjs.json && node dist/benchmarks/json.js",
+    "lint": "tsdx lint examples src tests"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.0",
     "benchmark": "^2.1.4",
+    "eslint-plugin-prettier": "^3.3.1",
     "globby": "^11.0.2",
     "json-test-suite": "^0.1.0",
     "prettier": "^2.2.1",

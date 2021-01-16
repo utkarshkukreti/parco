@@ -19,3 +19,4 @@ jobs:
       - run: yarn test
       - run: yarn bench:json
       - run: yarn format --check
+      - run: yarn lint
