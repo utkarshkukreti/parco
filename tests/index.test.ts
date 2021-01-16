@@ -712,6 +712,64 @@ test('lazy', () => {
   `)
 })
 
+test('or', () => {
+  type T = 'a' | ['b', 'c'] | 'd'
+  const abcd: p.Parser<T> = p.or<T>([P('a'), P('b').then(P('c')), P('d')])
+
+  expect(abcd.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": false,
+      "value": "expected \\"a\\" OR expected \\"b\\" OR expected \\"d\\"",
+    }
+  `)
+  expect(abcd.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(abcd.parse('b')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": false,
+      "value": "expected \\"c\\"",
+    }
+  `)
+  expect(abcd.parse('bc')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "b",
+        "c",
+      ],
+    }
+  `)
+  expect(abcd.parse('c')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": false,
+      "value": "expected \\"a\\" OR expected \\"b\\" OR expected \\"d\\"",
+    }
+  `)
+  expect(abcd.parse('d')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": "d",
+    }
+  `)
+  expect(abcd.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": "a",
+    }
+  `)
+})
+
 describe('examples', () => {
   test('json', () => {
     const ys = globby.sync('node_modules/json-test-suite/test_parsing/y_*.json')

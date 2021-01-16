@@ -171,6 +171,20 @@ export const regex = (arg: RegExp | string): Parser<string> => {
 export const lazy = <A, Input>(p: () => Parser<A, Input>): Parser<A, Input> =>
   new Parser((input, index) => p().fun(input, index))
 
+export const or = <A, Input = string>(
+  ps: Parser<A, Input>[],
+): Parser<A, Input> => {
+  return new Parser((input, index) => {
+    const error = []
+    for (const p of ps) {
+      const r = p.fun(input, index)
+      if (r.ok || r.index > index) return r
+      error.push(r.value)
+    }
+    return Error(index, error.join(' OR '))
+  })
+}
+
 export const Ok = <A>(index: number, value: A): Ok<A> => ({
   ok: true,
   index,
