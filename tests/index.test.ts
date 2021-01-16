@@ -205,7 +205,7 @@ test('Parser.filter()', () => {
   `)
 })
 
-test('Parser.filter()', () => {
+test('Parser.filterMap()', () => {
   const odd = p
     .regex(/\d+/)
     .map(parseInt)
