@@ -125,11 +125,12 @@ test('p', () => {
   const bar: p.Parser<string> = P('bar')
   const baz: p.Parser<string> = P(/baz/i)
   const baz2: p.Parser<'baz'> = P(P('baz'))
+  const baz3: p.Parser<'baz'> = P(input => p.Ok(input, true, 'baz'))
   try {
     // @ts-expect-error
     P(123)
   } catch {}
-  ignore(foo, bar, baz, baz2)
+  ignore(foo, bar, baz, baz2, baz3)
 })
 
 test('Parser.map()', () => {
