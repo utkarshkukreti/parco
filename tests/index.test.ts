@@ -227,6 +227,53 @@ test('Parser.filterMap()', () => {
   `)
 })
 
+test('Parser.bind()', () => {
+  const dup = P(/./).bind(string => P(string))
+
+  expect(dup.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": false,
+      "value": "expected /./",
+    }
+  `)
+  expect(dup.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(dup.parse('aa')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(dup.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+  expect(dup.parse('aab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": "a",
+    }
+  `)
+  expect(dup.parse('aba')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": false,
+      "value": "expected \\"a\\"",
+    }
+  `)
+})
+
 test('Parser.then()', () => {
   const int = p.regex(/\d+/).map(parseInt)
   const expr = int

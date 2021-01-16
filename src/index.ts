@@ -50,6 +50,14 @@ export class Parser<A, Input = string> {
     })
   }
 
+  bind<B>(b: (a: A) => Parser<B, Input>): Parser<B, Input> {
+    return new Parser((input, index) => {
+      const r = this.fun(input, index)
+      if (!r.ok) return r
+      return b(r.value).fun(input, r.index)
+    })
+  }
+
   then<B>(b: Parser<B, Input>): Parser<[A, B], Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
