@@ -227,8 +227,8 @@ test('Parser.filterMap()', () => {
   `)
 })
 
-test('Parser.bind()', () => {
-  const dup = P(/./).bind(string => P(string))
+test('Parser.andThen()', () => {
+  const dup = P(/./).andThen(string => P(string))
 
   expect(dup.parse('')).toMatchInlineSnapshot(`
     Object {
