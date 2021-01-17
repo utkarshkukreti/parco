@@ -7,14 +7,12 @@ const Factor: p.Parser<number> = Integer.or(
 )
 
 const Term = Factor.then(
-  P('*').or(P('/')).then(Factor).repeat(),
+  P(['*', '/']).then(Factor).repeat(),
 ).map(([head, tail]) =>
   tail.reduce((acc, [op, x]) => (op === '*' ? acc * x : acc / x), head),
 )
 
-const Expr = Term.then(
-  P('+').or(P('-')).then(Term).repeat(),
-).map(([head, tail]) =>
+const Expr = Term.then(P(['+', '-']).then(Term).repeat()).map(([head, tail]) =>
   tail.reduce((acc, [op, x]) => (op === '+' ? acc + x : acc - x), head),
 )
 
