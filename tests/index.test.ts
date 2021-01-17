@@ -191,7 +191,7 @@ test('regex', () => {
     }
   `)
 
-  const foo = p.regex(/foo/i)
+  const foo = p.regex(/foo/giy)
   expect(foo.parse('FO o')).toMatchInlineSnapshot(`
     Object {
       "expected": "/foo/i",

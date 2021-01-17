@@ -193,8 +193,9 @@ export const regex = (
   { expected: expected_ }: { expected?: Expected } = {},
 ): Parser<string> => {
   let regex = typeof arg === 'string' ? new RegExp(arg) : arg
-  const expected = expected_ || `/${regex.source}/${regex.flags}`
-  regex = new RegExp(regex.source, regex.flags + 'y')
+  const flags = regex.flags.replace(/y|g/g, '')
+  const expected = expected_ || `/${regex.source}/${flags}`
+  regex = new RegExp(regex.source, flags + 'y')
   return new Parser((input, index) => {
     regex.lastIndex = index
     const match = regex.exec(input)?.[0]
