@@ -48,6 +48,14 @@ export class Parser<A, Input = string> {
     })
   }
 
+  optional(): Parser<A | null, Input> {
+    return new Parser<A | null, Input>((input, index) => {
+      const r = this.fun(input, index)
+      if (r.ok || r.index > index) return r
+      return Ok(index, null)
+    })
+  }
+
   andThen<B>(b: (a: A) => Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)

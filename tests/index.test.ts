@@ -224,6 +224,45 @@ test('Parser.filterMap()', () => {
   `)
 })
 
+test('Parser.optional()', () => {
+  const ab: p.Parser<['a', 'b'] | null> = P('a').then(P('b')).optional()
+
+  expect(ab.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": true,
+      "value": null,
+    }
+  `)
+  expect(ab.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"b\\"",
+      "index": 1,
+      "ok": false,
+    }
+  `)
+  expect(ab.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+  expect(ab.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+})
+
 test('Parser.andThen()', () => {
   const dup = P(/./).andThen(string => P(string))
 
