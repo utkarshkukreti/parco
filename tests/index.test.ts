@@ -261,6 +261,47 @@ test('Parser.optional()', () => {
       ],
     }
   `)
+
+  const ab2: p.Parser<['a', 'b'] | '!'> = P('a').then(P('b')).optional('!')
+
+  // @ts-expect-error
+  const ab3: p.Parser<['a', 'b']> = P('a').then(P('b')).optional()
+  ignore(ab3)
+
+  expect(ab2.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": true,
+      "value": "!",
+    }
+  `)
+  expect(ab2.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"b\\"",
+      "index": 1,
+      "ok": false,
+    }
+  `)
+  expect(ab2.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+  expect(ab2.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
 })
 
 test('Parser.andThen()', () => {
