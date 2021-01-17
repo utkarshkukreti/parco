@@ -14,7 +14,7 @@
       import Sample from './json.sample'
       window.run = async () => {
         const $textarea = document.querySelector('textarea')
-        $textarea.value = 'Running...\n\n' + $textarea.value
+        $textarea.value = ('Running...\n\n' + $textarea.value).trim()
         await new Promise(resolve => setTimeout(resolve, 16))
         const benchmark = new Benchmark(() => Json(Sample)).run({
           async: false,
@@ -26,10 +26,10 @@
             'mib/s': +((benchmark.hz * Sample.length) / 1048576).toFixed(2),
           },
         ]
-        $textarea.value =
+        $textarea.value = (
           JSON.stringify(result, null, 2) +
-          '\n\n' +
-          $textarea.value.replace(/Running...\n\n/g, '')
+          $textarea.value.replace(/Running\.\.\./g, '')
+        ).trim()
       }
       /* Warm Up */ for (let i = 0; i < 100; i++) Json(Sample)
       window.run()
