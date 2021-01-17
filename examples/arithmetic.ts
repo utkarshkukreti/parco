@@ -8,12 +8,14 @@ const Factor: p.Parser<number> = Integer.or(
 
 const Term = Factor.then(
   P('*').or(P('/')).then(Factor).repeat(),
-).map(([acc, xs]) =>
-  xs.reduce((acc, [op, x]) => (op === '*' ? acc * x : acc / x), acc),
+).map(([head, tail]) =>
+  tail.reduce((acc, [op, x]) => (op === '*' ? acc * x : acc / x), head),
 )
 
-const Expr = Term.then(P('+').or(P('-')).then(Term).repeat()).map(([acc, xs]) =>
-  xs.reduce((acc, [op, x]) => (op === '+' ? acc + x : acc - x), acc),
+const Expr = Term.then(
+  P('+').or(P('-')).then(Term).repeat(),
+).map(([head, tail]) =>
+  tail.reduce((acc, [op, x]) => (op === '+' ? acc + x : acc - x), head),
 )
 
 export default (string: string): number | null => {
