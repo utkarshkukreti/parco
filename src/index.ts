@@ -9,8 +9,10 @@ export type Ok<A> = {
 export type Error = {
   ok: false
   index: number
-  value: string
+  value: Expected
 }
+
+export type Expected = string | Expected[]
 
 export class Parser<A, Input = string> {
   constructor(readonly fun: (input: Input, index: number) => Result<A>) {}
@@ -27,7 +29,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  filter(fun: (a: A) => boolean, error: string): Parser<A, Input> {
+  filter(fun: (a: A) => boolean, error: Expected): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
@@ -38,7 +40,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  filterMap<B>(fun: (a: A) => B | null, error: string): Parser<B, Input> {
+  filterMap<B>(fun: (a: A) => B | null, error: Expected): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
@@ -104,7 +106,7 @@ export class Parser<A, Input = string> {
       if (r.ok || r.index > index) return r
       const ra = a.fun(input, index)
       if (ra.ok || ra.index > index) return ra
-      return Error(index, `${r.value} OR ${ra.value}`)
+      return Error(index, [r.value, ra.value])
     })
   }
 
@@ -164,7 +166,7 @@ export const p: P = <A, Input>(
     : a
 
 export const string = <A extends string>(string: A): Parser<A> => {
-  const expected = `expected ${JSON.stringify(string)}`
+  const expected = JSON.stringify(string)
   return new Parser((input, index) => {
     if (input.slice(index).startsWith(string))
       return Ok(index + string.length, string)
@@ -174,7 +176,7 @@ export const string = <A extends string>(string: A): Parser<A> => {
 
 export const regex = (arg: RegExp | string): Parser<string> => {
   let regex = typeof arg === 'string' ? new RegExp(arg) : arg
-  const expected = `expected /${regex.source}/${regex.flags}`
+  const expected = `/${regex.source}/${regex.flags}`
   regex = new RegExp(regex.source, regex.flags + 'y')
   return new Parser((input, index) => {
     regex.lastIndex = index
@@ -197,7 +199,7 @@ export const or = <A, Input = string>(
       if (r.ok || r.index > index) return r
       errors.push(r.value)
     }
-    return Error(index, errors.join(' OR '))
+    return Error(index, errors)
   })
 }
 
@@ -207,7 +209,7 @@ export const Ok = <A>(index: number, value: A): Ok<A> => ({
   value,
 })
 
-export const Error = (index: number, value: string): Error => ({
+export const Error = (index: number, value: Expected): Error => ({
   ok: false,
   index,
   value,

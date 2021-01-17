@@ -12,14 +12,14 @@ test('string', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"foo\\"",
+      "value": "\\"foo\\"",
     }
   `)
   expect(foo.parse('f')).toMatchInlineSnapshot(`
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"foo\\"",
+      "value": "\\"foo\\"",
     }
   `)
   expect(foo.parse('foo')).toMatchInlineSnapshot(`
@@ -44,7 +44,7 @@ test('regex', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
   expect(int.parse('1')).toMatchInlineSnapshot(`
@@ -65,7 +65,7 @@ test('regex', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
   expect(int.parse('123 456')).toMatchInlineSnapshot(`
@@ -79,7 +79,7 @@ test('regex', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
 
@@ -88,7 +88,7 @@ test('regex', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /foo/i",
+      "value": "/foo/i",
     }
   `)
   expect(foo.parse('FOo bar')).toMatchInlineSnapshot(`
@@ -102,7 +102,7 @@ test('regex', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /foo/i",
+      "value": "/foo/i",
     }
   `)
 })
@@ -141,7 +141,7 @@ test('Parser.map()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
 })
@@ -180,7 +180,7 @@ test('Parser.filter()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
 })
@@ -222,7 +222,7 @@ test('Parser.filterMap()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
 })
@@ -234,14 +234,14 @@ test('Parser.andThen()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /./",
+      "value": "/./",
     }
   `)
   expect(dup.parse('a')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(dup.parse('aa')).toMatchInlineSnapshot(`
@@ -255,7 +255,7 @@ test('Parser.andThen()', () => {
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(dup.parse('aab')).toMatchInlineSnapshot(`
@@ -269,7 +269,7 @@ test('Parser.andThen()', () => {
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
 })
@@ -285,21 +285,21 @@ test('Parser.then()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
   expect(expr.parse('1')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"+\\"",
+      "value": "\\"+\\"",
     }
   `)
   expect(expr.parse('1+')).toMatchInlineSnapshot(`
     Object {
       "index": 2,
       "ok": false,
-      "value": "expected /\\\\d+/",
+      "value": "/\\\\d+/",
     }
   `)
   expect(expr.parse('1+23')).toMatchInlineSnapshot(`
@@ -337,14 +337,14 @@ test('Parser.thenSkip() / Parser.skipThen()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(a.parse('a')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(a.parse('ab')).toMatchInlineSnapshot(`
@@ -359,14 +359,14 @@ test('Parser.thenSkip() / Parser.skipThen()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(b.parse('a')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(b.parse('ab')).toMatchInlineSnapshot(`
@@ -381,28 +381,28 @@ test('Parser.thenSkip() / Parser.skipThen()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"z\\"",
+      "value": "\\"z\\"",
     }
   `)
   expect(ab.parse('z')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(ab.parse('za')).toMatchInlineSnapshot(`
     Object {
       "index": 2,
       "ok": false,
-      "value": "expected \\"z\\"",
+      "value": "\\"z\\"",
     }
   `)
   expect(ab.parse('zaz')).toMatchInlineSnapshot(`
     Object {
       "index": 3,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(ab.parse('zazb')).toMatchInlineSnapshot(`
@@ -424,7 +424,13 @@ test('Parser.or()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\" OR expected \\"b\\" OR expected /c/i",
+      "value": Array [
+        Array [
+          "\\"a\\"",
+          "\\"b\\"",
+        ],
+        "/c/i",
+      ],
     }
   `)
   expect(abc.parse('a')).toMatchInlineSnapshot(`
@@ -479,14 +485,17 @@ test('Parser.or()', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\" OR expected \\"a\\"",
+      "value": Array [
+        "\\"a\\"",
+        "\\"a\\"",
+      ],
     }
   `)
   expect(a.parse('a')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(a.parse('ab')).toMatchInlineSnapshot(`
@@ -519,7 +528,7 @@ test('Parser.repeat()', () => {
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(abs.parse('ab')).toMatchInlineSnapshot(`
@@ -550,7 +559,7 @@ test('Parser.repeat()', () => {
     Object {
       "index": 3,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(abs.parse('abab')).toMatchInlineSnapshot(`
@@ -573,7 +582,7 @@ test('Parser.repeat()', () => {
     Object {
       "index": 5,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
 
@@ -608,14 +617,14 @@ test('Parser.repeat()', () => {
     Object {
       "index": 2,
       "ok": false,
-      "value": "expected \\";\\"",
+      "value": "\\";\\"",
     }
   `)
   expect(as.parse('a;;')).toMatchInlineSnapshot(`
     Object {
       "index": 3,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(as.parse('a;;a')).toMatchInlineSnapshot(`
@@ -642,14 +651,14 @@ test('Parser.repeat()', () => {
     Object {
       "index": 5,
       "ok": false,
-      "value": "expected \\";\\"",
+      "value": "\\";\\"",
     }
   `)
   expect(as.parse('a;;a;;')).toMatchInlineSnapshot(`
     Object {
       "index": 6,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(as.parse('a;;a;;a')).toMatchInlineSnapshot(`
@@ -667,7 +676,7 @@ test('Parser.repeat()', () => {
     Object {
       "index": 8,
       "ok": false,
-      "value": "expected \\";\\"",
+      "value": "\\";\\"",
     }
   `)
 })
@@ -685,14 +694,14 @@ test('lazy', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\"",
+      "value": "\\"a\\"",
     }
   `)
   expect(ab.parse('a')).toMatchInlineSnapshot(`
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"b\\"",
+      "value": "\\"b\\"",
     }
   `)
   expect(ab.parse('ab')).toMatchInlineSnapshot(`
@@ -725,7 +734,11 @@ test('or', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\" OR expected \\"b\\" OR expected \\"d\\"",
+      "value": Array [
+        "\\"a\\"",
+        "\\"b\\"",
+        "\\"d\\"",
+      ],
     }
   `)
   expect(abcd.parse('a')).toMatchInlineSnapshot(`
@@ -739,7 +752,7 @@ test('or', () => {
     Object {
       "index": 1,
       "ok": false,
-      "value": "expected \\"c\\"",
+      "value": "\\"c\\"",
     }
   `)
   expect(abcd.parse('bc')).toMatchInlineSnapshot(`
@@ -756,7 +769,11 @@ test('or', () => {
     Object {
       "index": 0,
       "ok": false,
-      "value": "expected \\"a\\" OR expected \\"b\\" OR expected \\"d\\"",
+      "value": Array [
+        "\\"a\\"",
+        "\\"b\\"",
+        "\\"d\\"",
+      ],
     }
   `)
   expect(abcd.parse('d')).toMatchInlineSnapshot(`
