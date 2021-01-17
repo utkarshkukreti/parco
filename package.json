@@ -3,9 +3,18 @@
   "version": "0.4.0",
   "description": "A hyper-optimized 1kb library to build fully type-safe parsers in TypeScript.",
   "keywords": [
-    "typescript",
+    "combinator",
+    "ll",
+    "parse",
+    "parsec",
+    "parser combinator",
     "parser",
-    "parser combinator"
+    "parsing",
+    "regex",
+    "regexp",
+    "string",
+    "typesafe",
+    "typescript"
   ],
   "homepage": "https://github.com/utkarshkukreti/parco",
   "license": "MIT",
