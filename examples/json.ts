@@ -8,12 +8,10 @@ const Number = P(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)
 
 const ch = (re: string) => p.regex(`[ \t\r\n]*${re}[ \t\r\n]*`)
 
-const Value = p.or<Value>([
-  String,
-  Keyword,
-  Number,
-  p.lazy(() => Array.or(Object_)),
-])
+const Value = p.or<Value>(
+  [String, Keyword, Number, p.lazy(() => Array.or(Object_))],
+  { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
+)
 
 const Array: p.Parser<Value[]> = Value.repeat({ join: ch(',') }).wrap(
   ch('\\['),
