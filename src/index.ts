@@ -112,9 +112,7 @@ export class Parser<A, Input = string> {
       for (let i = 0; ; i++) {
         if (join && i > 0) {
           const r1 = join.fun(input, index)
-          if (r1.ok) {
-          } else if (r1.index === index) return Ok(index, value)
-          else return r1
+          if (!r1.ok) return r1.index === index ? Ok(index, value) : r1
           index = r1.index
           const r = this.fun(input, index)
           if (!r.ok) return r
@@ -122,9 +120,8 @@ export class Parser<A, Input = string> {
           index = r.index
         } else {
           const r = this.fun(input, index)
-          if (r.ok) value.push(r.value)
-          else if (r.index === index) return Ok(index, value)
-          else return r
+          if (!r.ok) return r.index === index ? Ok(index, value) : r
+          value.push(r.value)
           index = r.index
         }
       }
