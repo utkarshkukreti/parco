@@ -108,7 +108,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  array({ join }: { join?: Parser<unknown, Input> } = {}): Parser<A[], Input> {
+  repeat({ join }: { join?: Parser<unknown, Input> } = {}): Parser<A[], Input> {
     return new Parser((input, index) => {
       const value = []
       for (let i = 0; ; i++) {

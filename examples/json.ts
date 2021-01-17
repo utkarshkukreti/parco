@@ -15,14 +15,14 @@ const Value = p.or<Value>([
   p.lazy(() => Array.or(Object_)),
 ])
 
-const Array: p.Parser<Value[]> = Value.array({ join: ch(',') }).wrap(
+const Array: p.Parser<Value[]> = Value.repeat({ join: ch(',') }).wrap(
   ch('\\['),
   ch('\\]'),
 )
 
 const Object_: p.Parser<[string, Value][]> = String.thenSkip(ch(':'))
   .then(Value)
-  .array({ join: ch(',') })
+  .repeat({ join: ch(',') })
   .wrap(ch('\\{'), ch('\\}'))
 
 export default (string: string): Value | null => {

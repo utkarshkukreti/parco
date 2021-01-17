@@ -505,8 +505,8 @@ test('Parser.or()', () => {
   `)
 })
 
-test('Parser.array()', () => {
-  const abs: p.Parser<['a', 'b'][]> = P('a').then(P('b')).array()
+test('Parser.repeat()', () => {
+  const abs: p.Parser<['a', 'b'][]> = P('a').then(P('b')).repeat()
 
   expect(abs.parse('')).toMatchInlineSnapshot(`
     Object {
@@ -577,7 +577,7 @@ test('Parser.array()', () => {
     }
   `)
 
-  const as: p.Parser<'a'[]> = P('a').array({ join: P(';').then(P(';')) })
+  const as: p.Parser<'a'[]> = P('a').repeat({ join: P(';').then(P(';')) })
 
   expect(as.parse('')).toMatchInlineSnapshot(`
     Object {
