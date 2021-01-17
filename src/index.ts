@@ -173,13 +173,11 @@ export const p: P = <A, Input>(
 export const string = <A extends string>(arg: A | A[]): Parser<A> => {
   if (Array.isArray(arg)) {
     const expected = arg.map(a => JSON.stringify(a))
-    const re = new RegExp(
-      arg
-        .slice()
-        .sort((a, b) => b.length - a.length)
-        .map(escapeRegex)
-        .join('|'),
-    )
+    const re = arg
+      .slice()
+      .sort((a, b) => b.length - a.length)
+      .map(escapeRegex)
+      .join('|')
     // This `as` is sound as long as our regex construction above is correct!
     return regex(re, { expected }) as Parser<A>
   }
