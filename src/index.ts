@@ -108,13 +108,13 @@ export class Parser<A, Input = string> {
     })
   }
 
-  or(a: Parser<A, Input>): Parser<A, Input> {
-    return new Parser((input, index) => {
+  or<B>(b: Parser<B, Input>): Parser<A | B, Input> {
+    return new Parser<A | B, Input>((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
-      const ra = a.fun(input, index)
-      if (ra.ok || ra.index > index) return ra
-      return Error(index, [r.expected, ra.expected])
+      const rb = b.fun(input, index)
+      if (rb.ok || rb.index > index) return rb
+      return Error(index, [r.expected, rb.expected])
     })
   }
 

@@ -589,6 +589,9 @@ test('Parser.or()', () => {
       "value": "ab",
     }
   `)
+
+  const ab: p.Parser<'a' | 'b'> = P('a').or(P('b'))
+  ignore(ab)
 })
 
 test('Parser.repeat()', () => {
