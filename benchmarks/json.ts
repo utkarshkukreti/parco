@@ -13,7 +13,7 @@ const run = (name: string, input: string, fn: () => unknown) => {
     {
       name,
       'ops/s': ~~benchmark.hz,
-      'mb/s': +((benchmark.hz * input.length) / 1048576).toFixed(2),
+      'mib/s': +((benchmark.hz * input.length) / 1048576).toFixed(2),
     },
   ])
 }

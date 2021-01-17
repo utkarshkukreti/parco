@@ -23,7 +23,7 @@
           {
             name: `${Sample.length} bytes`,
             'ops/s': ~~benchmark.hz,
-            'mb/s': +((benchmark.hz * Sample.length) / 1048576).toFixed(2),
+            'mib/s': +((benchmark.hz * Sample.length) / 1048576).toFixed(2),
           },
         ]
         $textarea.value =
