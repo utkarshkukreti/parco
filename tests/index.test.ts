@@ -2,6 +2,7 @@ import * as fs from 'fs'
 
 import * as globby from 'globby'
 
+import Arithmetic from '../examples/arithmetic'
 import Json, { Value as JsonValue } from '../examples/json'
 import P, * as p from '../src'
 
@@ -967,6 +968,20 @@ describe('examples', () => {
       } catch {}
       expect(ok).toBeTruthy()
     }
+  })
+
+  test('arithmetic', () => {
+    expect(Arithmetic('')).toMatchInlineSnapshot(`null`)
+    expect(Arithmetic('1')).toMatchInlineSnapshot(`1`)
+    expect(Arithmetic('2*3')).toMatchInlineSnapshot(`6`)
+    expect(Arithmetic('4+5*6')).toMatchInlineSnapshot(`34`)
+    expect(Arithmetic('7*8+9')).toMatchInlineSnapshot(`65`)
+    expect(Arithmetic('((10)+(9*8-7*6)*(5))-4-3-(2-1)')).toMatchInlineSnapshot(
+      `152`,
+    )
+    expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(
+      `9990889199.019802`,
+    )
   })
 })
 
