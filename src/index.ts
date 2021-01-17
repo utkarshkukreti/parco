@@ -30,12 +30,7 @@ export class Parser<A, Input = string> {
   }
 
   filter(fun: (a: A) => boolean, expected: Expected): Parser<A, Input> {
-    return new Parser((input, index) => {
-      const r = this.fun(input, index)
-      if (!r.ok) return r
-      if (fun(r.value)) return r
-      return Error(r.index, expected)
-    })
+    return this.filterMap(a => (fun(a) ? a : null), expected)
   }
 
   filterMap<B>(fun: (a: A) => B | null, expected: Expected): Parser<B, Input> {
