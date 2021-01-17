@@ -208,14 +208,24 @@ export const or = <A, Input = string>(
   ps: Parser<A, Input>[],
   { expected }: { expected?: Expected } = {},
 ): Parser<A, Input> => {
+  if (expected) {
+    return new Parser((input, index) => {
+      for (const p of ps) {
+        const r = p.fun(input, index)
+        if (r.ok || r.index > index) return r
+      }
+      return Error(index, expected)
+    })
+  }
+
   return new Parser((input, index) => {
-    const expected_: null | Expected[] = expected === undefined ? [] : null
+    const expected = []
     for (const p of ps) {
       const r = p.fun(input, index)
       if (r.ok || r.index > index) return r
-      expected_ && expected_.push(r.expected)
+      expected.push(r.expected)
     }
-    return Error(index, expected_ || expected || '?')
+    return Error(index, expected)
   })
 }
 
