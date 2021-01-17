@@ -150,7 +150,7 @@ test('Parser.filter()', () => {
   const odd = p
     .regex(/\d+/)
     .map(parseInt)
-    .filter(n => n % 2 === 1, 'expected an odd integer')
+    .filter(n => n % 2 === 1, 'an odd integer')
 
   expect(odd.parse('1')).toMatchInlineSnapshot(`
     Object {
@@ -162,7 +162,7 @@ test('Parser.filter()', () => {
 
   expect(odd.parse('12')).toMatchInlineSnapshot(`
     Object {
-      "expected": "expected an odd integer",
+      "expected": "an odd integer",
       "index": 2,
       "ok": false,
     }
@@ -189,10 +189,7 @@ test('Parser.filterMap()', () => {
   const odd = p
     .regex(/\d+/)
     .map(parseInt)
-    .filterMap(
-      n => (n % 2 === 1 ? `${n} is odd!` : null),
-      'expected an odd integer',
-    )
+    .filterMap(n => (n % 2 === 1 ? `${n} is odd!` : null), 'an odd integer')
 
   expect(odd.parse('1')).toMatchInlineSnapshot(`
     Object {
@@ -204,7 +201,7 @@ test('Parser.filterMap()', () => {
 
   expect(odd.parse('12')).toMatchInlineSnapshot(`
     Object {
-      "expected": "expected an odd integer",
+      "expected": "an odd integer",
       "index": 2,
       "ok": false,
     }
