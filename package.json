@@ -2,6 +2,13 @@
   "name": "parco",
   "version": "0.3.0",
   "description": "Hyper-optimized, < 1kb library to build fully type-safe parsers in TypeScript.",
+  "keywords": [
+    "typescript",
+    "parser",
+    "parser combinator"
+  ],
+  "homepage": "https://github.com/utkarshkukreti/parco",
+  "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/parco.esm.js",
   "typings": "dist/index.d.ts",
