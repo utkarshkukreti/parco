@@ -2,7 +2,7 @@ import * as fs from 'fs'
 
 import * as globby from 'globby'
 
-import Json from '../examples/json'
+import Json, { Value as JsonValue } from '../examples/json'
 import P, * as p from '../src'
 
 test('string', () => {
@@ -791,6 +791,78 @@ test('or', () => {
 
 describe('examples', () => {
   test('json', () => {
+    expect(JsonValue.parse('')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "a string",
+          "a keyword",
+          "a number",
+          "an array",
+          "an object",
+        ],
+        "index": 0,
+        "ok": false,
+      }
+    `)
+    expect(JsonValue.parse('123')).toMatchInlineSnapshot(`
+      Object {
+        "index": 3,
+        "ok": true,
+        "value": "123",
+      }
+    `)
+    expect(JsonValue.parse('-123e-7')).toMatchInlineSnapshot(`
+      Object {
+        "index": 7,
+        "ok": true,
+        "value": "-123e-7",
+      }
+    `)
+    expect(JsonValue.parse('"foo \\t\\r\\nbar"')).toMatchInlineSnapshot(`
+      Object {
+        "index": 15,
+        "ok": true,
+        "value": "\\"foo \\\\t\\\\r\\\\nbar\\"",
+      }
+    `)
+    expect(JsonValue.parse('["foo"]')).toMatchInlineSnapshot(`
+      Object {
+        "index": 7,
+        "ok": true,
+        "value": Array [
+          "\\"foo\\"",
+        ],
+      }
+    `)
+    expect(JsonValue.parse('["foo":]')).toMatchInlineSnapshot(`
+      Object {
+        "expected": "/[ 	\\\\r\\\\n]*\\\\][ 	\\\\r\\\\n]*/",
+        "index": 6,
+        "ok": false,
+      }
+    `)
+    expect(JsonValue.parse('{"foo": "bar"}')).toMatchInlineSnapshot(`
+      Object {
+        "index": 14,
+        "ok": true,
+        "value": Array [
+          Array [
+            "\\"foo\\"",
+            "\\"bar\\"",
+          ],
+        ],
+      }
+    `)
+    expect(JsonValue.parse('{1: "bar"}')).toMatchInlineSnapshot(`
+      Object {
+        "expected": "/[ 	\\\\r\\\\n]*\\\\}[ 	\\\\r\\\\n]*/",
+        "index": 1,
+        "ok": false,
+      }
+    `)
+  })
+
+  test('json: json-test-suite', () => {
     const ys = globby.sync('node_modules/json-test-suite/test_parsing/y_*.json')
     const ns = globby.sync('node_modules/json-test-suite/test_parsing/n_*.json')
 
