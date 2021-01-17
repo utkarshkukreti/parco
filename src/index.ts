@@ -166,9 +166,12 @@ export const string = <A extends string>(string: A): Parser<A> => {
   })
 }
 
-export const regex = (arg: RegExp | string): Parser<string> => {
+export const regex = (
+  arg: RegExp | string,
+  { expected: expected_ }: { expected?: Expected } = {},
+): Parser<string> => {
   let regex = typeof arg === 'string' ? new RegExp(arg) : arg
-  const expected = `/${regex.source}/${regex.flags}`
+  const expected = expected_ || `/${regex.source}/${regex.flags}`
   regex = new RegExp(regex.source, regex.flags + 'y')
   return new Parser((input, index) => {
     regex.lastIndex = index

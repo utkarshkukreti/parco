@@ -836,7 +836,7 @@ describe('examples', () => {
     `)
     expect(JsonValue.parse('["foo":]')).toMatchInlineSnapshot(`
       Object {
-        "expected": "/[ 	\\\\r\\\\n]*\\\\][ 	\\\\r\\\\n]*/",
+        "expected": "]",
         "index": 6,
         "ok": false,
       }
@@ -855,7 +855,7 @@ describe('examples', () => {
     `)
     expect(JsonValue.parse('{1: "bar"}')).toMatchInlineSnapshot(`
       Object {
-        "expected": "/[ 	\\\\r\\\\n]*\\\\}[ 	\\\\r\\\\n]*/",
+        "expected": "}",
         "index": 1,
         "ok": false,
       }
