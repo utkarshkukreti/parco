@@ -293,45 +293,6 @@ test('Parser.filter()', () => {
   `)
 })
 
-test('Parser.filterMap()', () => {
-  const odd = p
-    .regex(/\d+/)
-    .map(parseInt)
-    .filterMap(n => (n % 2 === 1 ? `${n} is odd!` : null), 'an odd integer')
-
-  expect(odd.parse('1')).toMatchInlineSnapshot(`
-    Object {
-      "index": 1,
-      "ok": true,
-      "value": "1 is odd!",
-    }
-  `)
-
-  expect(odd.parse('12')).toMatchInlineSnapshot(`
-    Object {
-      "expected": "an odd integer",
-      "index": 2,
-      "ok": false,
-    }
-  `)
-
-  expect(odd.parse('123')).toMatchInlineSnapshot(`
-    Object {
-      "index": 3,
-      "ok": true,
-      "value": "123 is odd!",
-    }
-  `)
-
-  expect(odd.parse('abc')).toMatchInlineSnapshot(`
-    Object {
-      "expected": "/\\\\d+/",
-      "index": 0,
-      "ok": false,
-    }
-  `)
-})
-
 test('Parser.optional()', () => {
   const ab: p.Parser<['a', 'b'] | null> = P('a').then(P('b')).optional()
 
