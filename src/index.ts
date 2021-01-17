@@ -149,7 +149,7 @@ export type P = {
     A,
     Input
   >
-  <A extends string>(a: A): Parser<A, string>
+  <A extends string>(a: A | A[]): Parser<A, string>
   (a: RegExp): Parser<string, string>
   <A, Input = string>(a: Parser<A, Input>): Parser<A, Input>
 }
@@ -158,12 +158,13 @@ export const p: P = <A, Input>(
   a:
     | ((input: Input, index: number) => Result<A>)
     | string
+    | string[]
     | RegExp
     | Parser<A, Input>,
 ) =>
   typeof a === 'function'
     ? new Parser(a)
-    : typeof a === 'string'
+    : typeof a === 'string' || Array.isArray(a)
     ? string(a)
     : a instanceof RegExp
     ? regex(a)

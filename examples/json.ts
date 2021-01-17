@@ -2,7 +2,7 @@ import P, * as p from '../src'
 
 export type Value = string | Value[] | [string, Value][]
 
-const Keyword = P(/true|false|null/)
+const Keyword = P(['true', 'false', 'null'])
 const String = P(/"(?:[^\\"\t\n\r\x00]+|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/)
 const Number = P(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)
 
