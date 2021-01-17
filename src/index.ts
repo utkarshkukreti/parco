@@ -191,15 +191,16 @@ export const lazy = <A, Input>(p: () => Parser<A, Input>): Parser<A, Input> =>
 
 export const or = <A, Input = string>(
   ps: Parser<A, Input>[],
+  { expected }: { expected?: Expected } = {},
 ): Parser<A, Input> => {
   return new Parser((input, index) => {
-    const expected = []
+    const expected_: null | Expected[] = expected === undefined ? [] : null
     for (const p of ps) {
       const r = p.fun(input, index)
       if (r.ok || r.index > index) return r
-      expected.push(r.expected)
+      expected_ && expected_.push(r.expected)
     }
-    return Error(index, expected)
+    return Error(index, expected_ || expected || '?')
   })
 }
 
