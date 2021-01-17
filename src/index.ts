@@ -9,7 +9,7 @@ export type Ok<A> = {
 export type Error = {
   ok: false
   index: number
-  value: Expected
+  expected: Expected
 }
 
 export type Expected = string | Expected[]
@@ -106,7 +106,7 @@ export class Parser<A, Input = string> {
       if (r.ok || r.index > index) return r
       const ra = a.fun(input, index)
       if (ra.ok || ra.index > index) return ra
-      return Error(index, [r.value, ra.value])
+      return Error(index, [r.expected, ra.expected])
     })
   }
 
@@ -197,7 +197,7 @@ export const or = <A, Input = string>(
     for (const p of ps) {
       const r = p.fun(input, index)
       if (r.ok || r.index > index) return r
-      errors.push(r.value)
+      errors.push(r.expected)
     }
     return Error(index, errors)
   })
@@ -212,7 +212,7 @@ export const Ok = <A>(index: number, value: A): Ok<A> => ({
 export const Error = (index: number, value: Expected): Error => ({
   ok: false,
   index,
-  value,
+  expected: value,
 })
 
 export default p
