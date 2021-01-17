@@ -32,8 +32,7 @@ export class Parser<A, Input = string> {
   filter(fun: (a: A) => boolean, expected: Expected): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
-      if (!r.ok) return r
-      if (fun(r.value)) return Ok(r.index, r.value)
+      if (!r.ok || fun(r.value)) return r
       return Error(r.index, expected)
     })
   }
