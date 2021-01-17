@@ -41,7 +41,7 @@
     "json-test-suite": "^0.1.0",
     "prettier": "^2.2.1",
     "prettier-plugin-sorted": "^2.0.0",
-    "snowpack": "^3.0.10",
+    "snowpack": "^3.0.11",
     "ts-node": "^9.1.1",
     "tsdx": "^0.14.1",
     "typescript": "^4.1.3"
