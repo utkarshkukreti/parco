@@ -169,11 +169,22 @@ export const p: P = <A, Input>(
     ? regex(a)
     : a
 
-export const string = <A extends string>(string: A): Parser<A> => {
-  const expected = JSON.stringify(string)
+export const string = <A extends string>(arg: A | A[]): Parser<A> => {
+  if (Array.isArray(arg)) {
+    const expected = arg.map(a => JSON.stringify(a))
+    const re = new RegExp(
+      arg
+        .slice()
+        .sort((a, b) => b.length - a.length)
+        .map(escapeRegex)
+        .join('|'),
+    )
+    // This `as` is sound as long as our regex construction above is correct!
+    return regex(re, { expected }) as Parser<A>
+  }
+  const expected = JSON.stringify(arg)
   return new Parser((input, index) => {
-    if (input.slice(index).startsWith(string))
-      return Ok(index + string.length, string)
+    if (input.slice(index).startsWith(arg)) return Ok(index + arg.length, arg)
     return Error(index, expected)
   })
 }
@@ -224,3 +235,6 @@ export const Error = (index: number, value: Expected): Error => ({
 })
 
 export default p
+
+const escapeRegex = (string: string) =>
+  string.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')

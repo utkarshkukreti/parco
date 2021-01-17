@@ -37,6 +37,113 @@ test('string', () => {
       "value": "foo",
     }
   `)
+
+  const keyword: p.Parser<'foo' | 'bar' | 'foobar'> = p.string([
+    'foo',
+    'bar',
+    'foobar',
+  ])
+
+  expect(keyword.parse('f')).toMatchInlineSnapshot(`
+    Object {
+      "expected": Array [
+        "\\"foo\\"",
+        "\\"bar\\"",
+        "\\"foobar\\"",
+      ],
+      "index": 0,
+      "ok": false,
+    }
+  `)
+
+  expect(keyword.parse('foo')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "foo",
+    }
+  `)
+
+  expect(keyword.parse('foob')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "foo",
+    }
+  `)
+
+  expect(keyword.parse('foobar')).toMatchInlineSnapshot(`
+    Object {
+      "index": 6,
+      "ok": true,
+      "value": "foobar",
+    }
+  `)
+
+  expect(keyword.parse('bar')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "bar",
+    }
+  `)
+
+  expect(keyword.parse('barfoo')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "bar",
+    }
+  `)
+
+  const plus: p.Parser<'+' | '+++'> = p.string(['+', '+++'])
+
+  expect(plus.parse('*')).toMatchInlineSnapshot(`
+    Object {
+      "expected": Array [
+        "\\"+\\"",
+        "\\"+++\\"",
+      ],
+      "index": 0,
+      "ok": false,
+    }
+  `)
+
+  expect(plus.parse('+')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": "+",
+    }
+  `)
+
+  expect(plus.parse('++')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": "+",
+    }
+  `)
+
+  expect(plus.parse('+++')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "+++",
+    }
+  `)
+
+  expect(plus.parse('++++')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "+++",
+    }
+  `)
+
+  // @ts-expect-error
+  const plus_: p.Parser<'+' | '++'> = p.string(['+', '+++'])
+  ignore(plus_)
 })
 
 test('regex', () => {
