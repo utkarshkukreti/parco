@@ -78,7 +78,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  thenSkip(b: Parser<unknown, Input>): Parser<A, Input> {
+  thenSkip<B>(b: Parser<B, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -96,15 +96,15 @@ export class Parser<A, Input = string> {
     })
   }
 
-  wrap(a: Parser<unknown, Input>, b: Parser<unknown, Input>): Parser<A, Input> {
+  wrap<B, C>(b: Parser<B, Input>, c: Parser<C, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
-      const ra = a.fun(input, index)
-      if (!ra.ok) return ra
-      const r = this.fun(input, ra.index)
-      if (!r.ok) return r
-      const rb = b.fun(input, r.index)
+      const rb = b.fun(input, index)
       if (!rb.ok) return rb
-      return Ok(rb.index, r.value)
+      const r = this.fun(input, rb.index)
+      if (!r.ok) return r
+      const rc = c.fun(input, r.index)
+      if (!rc.ok) return rc
+      return Ok(rc.index, r.value)
     })
   }
 
@@ -118,15 +118,15 @@ export class Parser<A, Input = string> {
     })
   }
 
-  repeat({ join }: { join?: Parser<unknown, Input> } = {}): Parser<A[], Input> {
+  repeat<B>({ join }: { join?: Parser<B, Input> } = {}): Parser<A[], Input> {
     return new Parser((input, index) => {
       const value = []
       for (let i = 0; ; i++) {
         let r
         if (join && i > 0) {
-          const r1 = join.fun(input, index)
-          if (!r1.ok) return r1.index === index ? Ok(index, value) : r1
-          index = r1.index
+          const rb = join.fun(input, index)
+          if (!rb.ok) return rb.index === index ? Ok(index, value) : rb
+          index = rb.index
           r = this.fun(input, index)
           if (!r.ok) return r
         } else {
