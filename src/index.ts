@@ -29,24 +29,24 @@ export class Parser<A, Input = string> {
     })
   }
 
-  filter(fun: (a: A) => boolean, error: Expected): Parser<A, Input> {
+  filter(fun: (a: A) => boolean, expected: Expected): Parser<A, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
         if (fun(r.value)) return r
-        return Error(r.index, error)
+        return Error(r.index, expected)
       }
       return r
     })
   }
 
-  filterMap<B>(fun: (a: A) => B | null, error: Expected): Parser<B, Input> {
+  filterMap<B>(fun: (a: A) => B | null, expected: Expected): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (r.ok) {
         const value = fun(r.value)
         if (value !== null) return Ok(r.index, value)
-        return Error(r.index, error)
+        return Error(r.index, expected)
       }
       return r
     })
@@ -193,13 +193,13 @@ export const or = <A, Input = string>(
   ps: Parser<A, Input>[],
 ): Parser<A, Input> => {
   return new Parser((input, index) => {
-    const errors = []
+    const expected = []
     for (const p of ps) {
       const r = p.fun(input, index)
       if (r.ok || r.index > index) return r
-      errors.push(r.expected)
+      expected.push(r.expected)
     }
-    return Error(index, errors)
+    return Error(index, expected)
   })
 }
 
