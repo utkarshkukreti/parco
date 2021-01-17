@@ -55,7 +55,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  andThen<B>(b: (a: A) => Parser<B, Input>): Parser<B, Input> {
+  bind<B>(b: (a: A) => Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r

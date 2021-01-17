@@ -412,8 +412,8 @@ test('Parser.optional()', () => {
   `)
 })
 
-test('Parser.andThen()', () => {
-  const dup = P(/./).andThen(string => P(string))
+test('Parser.bind()', () => {
+  const dup = P(/./).bind(string => P(string))
 
   expect(dup.parse('')).toMatchInlineSnapshot(`
     Object {
