@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as globby from 'globby'
 
 import Arithmetic from '../examples/arithmetic'
-import Json, { Value as JsonValue } from '../examples/json'
+import Json from '../examples/json'
 import P, * as p from '../src'
 
 test('string', () => {
@@ -1013,7 +1013,7 @@ test('fail', () => {
 
 describe('examples', () => {
   test('json', () => {
-    expect(JsonValue.parse('')).toMatchInlineSnapshot(`
+    expect(Json('')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
           "a string",
@@ -1026,28 +1026,28 @@ describe('examples', () => {
         "ok": false,
       }
     `)
-    expect(JsonValue.parse('123')).toMatchInlineSnapshot(`
+    expect(Json('123')).toMatchInlineSnapshot(`
       Object {
         "index": 3,
         "ok": true,
         "value": "123",
       }
     `)
-    expect(JsonValue.parse('-123e-7')).toMatchInlineSnapshot(`
+    expect(Json('-123e-7')).toMatchInlineSnapshot(`
       Object {
         "index": 7,
         "ok": true,
         "value": "-123e-7",
       }
     `)
-    expect(JsonValue.parse('"foo \\t\\r\\nbar"')).toMatchInlineSnapshot(`
+    expect(Json('"foo \\t\\r\\nbar"')).toMatchInlineSnapshot(`
       Object {
         "index": 15,
         "ok": true,
         "value": "\\"foo \\\\t\\\\r\\\\nbar\\"",
       }
     `)
-    expect(JsonValue.parse('["foo"]')).toMatchInlineSnapshot(`
+    expect(Json('["foo"]')).toMatchInlineSnapshot(`
       Object {
         "index": 7,
         "ok": true,
@@ -1056,14 +1056,14 @@ describe('examples', () => {
         ],
       }
     `)
-    expect(JsonValue.parse('["foo":]')).toMatchInlineSnapshot(`
+    expect(Json('["foo":]')).toMatchInlineSnapshot(`
       Object {
         "expected": "]",
         "index": 6,
         "ok": false,
       }
     `)
-    expect(JsonValue.parse('{"foo": "bar"}')).toMatchInlineSnapshot(`
+    expect(Json('{"foo": "bar"}')).toMatchInlineSnapshot(`
       Object {
         "index": 14,
         "ok": true,
@@ -1075,7 +1075,7 @@ describe('examples', () => {
         ],
       }
     `)
-    expect(JsonValue.parse('{1: "bar"}')).toMatchInlineSnapshot(`
+    expect(Json('{1: "bar"}')).toMatchInlineSnapshot(`
       Object {
         "expected": "}",
         "index": 1,
