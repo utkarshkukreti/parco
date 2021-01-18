@@ -41,7 +41,7 @@ export class Parser<A, Input = string> {
   optional<B>(default_: B): Parser<A | B, Input>
 
   optional<B>(default_?: B) {
-    const default__ = typeof default_ === 'undefined' ? null : default_
+    const default__ = default_ === undefined ? null : default_
     return new Parser<A | B | null, Input>((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
