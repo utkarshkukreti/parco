@@ -180,7 +180,7 @@ export const regex = (
   arg: RegExp | string,
   { expected: expected_ }: { expected?: Expected } = {},
 ): Parser<string> => {
-  let [source, flags] =
+  const [source, flags] =
     typeof arg === 'string'
       ? [arg, '']
       : [arg.source, arg.flags.replace(/y|g/g, '')]
