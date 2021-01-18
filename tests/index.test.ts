@@ -215,6 +215,49 @@ test('regex', () => {
   `)
 })
 
+test('end', () => {
+  const end = p.end()
+
+  expect(end.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": true,
+      "value": undefined,
+    }
+  `)
+  expect(end.parse('foo')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "end of input",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+
+  const foo = P('foo').thenSkip(p.end())
+
+  expect(foo.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"foo\\"",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(foo.parse('foo')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": "foo",
+    }
+  `)
+  expect(foo.parse('foobar')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "end of input",
+      "index": 3,
+      "ok": false,
+    }
+  `)
+})
+
 test('p', () => {
   const foo: p.Parser<'foo'> = P('foo')
   const bar: p.Parser<string> = P('bar')

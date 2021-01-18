@@ -191,6 +191,11 @@ export const regex = (
   })
 }
 
+export const end = (): Parser<void, string> =>
+  new Parser((input, index) =>
+    index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
+  )
+
 export const lazy = <A, Input>(p: () => Parser<A, Input>): Parser<A, Input> =>
   new Parser((input, index) => p().fun(input, index))
 
