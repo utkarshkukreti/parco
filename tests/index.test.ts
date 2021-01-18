@@ -294,7 +294,7 @@ test('Parser.filter()', () => {
 })
 
 test('Parser.optional()', () => {
-  const ab: p.Parser<['a', 'b'] | null> = P('a').then(P('b')).optional()
+  const ab: p.Parser<['a', 'b'] | null> = P('a').then(P('b')).optional(null)
 
   expect(ab.parse('')).toMatchInlineSnapshot(`
     Object {

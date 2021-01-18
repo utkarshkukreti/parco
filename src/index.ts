@@ -37,11 +37,8 @@ export class Parser<A, Input = string> {
     })
   }
 
-  optional(): Parser<A | null, Input>
-  optional<B>(default_: B): Parser<A | B, Input>
-
-  optional<B>(default_: B | null = null) {
-    return new Parser<A | B | null, Input>((input, index) => {
+  optional<B>(default_: B): Parser<A | B, Input> {
+    return new Parser<A | B, Input>((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
       return Ok(index, default_)
