@@ -124,6 +124,15 @@ export class Parser<A, Input = string> {
     })
   }
 
+  chainLeft<B>(
+    op: Parser<B, Input>,
+    fun: (l: A, op: B, r: A) => A,
+  ): Parser<A, Input> {
+    return this.then(op.then(this).repeat()).map(([head, tail]) =>
+      tail.reduce((acc, [op, x]) => fun(acc, op, x), head),
+    )
+  }
+
   pipe<B>(fun: (_: this) => B): B {
     return fun(this)
   }

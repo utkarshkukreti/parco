@@ -6,14 +6,12 @@ const Factor: p.Parser<number> = Integer.or(
   p.lazy(() => Expr).wrap(P('('), P(')')),
 )
 
-const Term = Factor.then(
-  P(['*', '/']).then(Factor).repeat(),
-).map(([head, tail]) =>
-  tail.reduce((acc, [op, x]) => (op === '*' ? acc * x : acc / x), head),
+const Term = Factor.chainLeft(P(['*', '/']), (l, op, r) =>
+  op === '*' ? l * r : l / r,
 )
 
-const Expr = Term.then(P(['+', '-']).then(Term).repeat()).map(([head, tail]) =>
-  tail.reduce((acc, [op, x]) => (op === '+' ? acc + x : acc - x), head),
+const Expr = Term.chainLeft(P(['+', '-']), (l, op, r) =>
+  op === '+' ? l + r : l - r,
 )
 
 const Full = Expr.thenSkip(p.end())
