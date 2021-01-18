@@ -941,6 +941,33 @@ test('or', () => {
   `)
 })
 
+test('succeed', () => {
+  const foo: p.Parser<'foo'> = p.succeed('foo')
+  // @ts-expect-error
+  const bar: p.Parser<'foo'> = p.succeed('bar')
+  ignore(bar)
+
+  expect(foo.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "index": 0,
+      "ok": true,
+      "value": "foo",
+    }
+  `)
+})
+
+test('fail', () => {
+  const foo: p.Parser<'foo'> = P('foo').thenSkip(p.fail('!!!'))
+
+  expect(foo.parse('foo')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "!!!",
+      "index": 3,
+      "ok": false,
+    }
+  `)
+})
+
 describe('examples', () => {
   test('json', () => {
     expect(JsonValue.parse('')).toMatchInlineSnapshot(`

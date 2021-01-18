@@ -222,6 +222,12 @@ export const or = <A, Input = string>(
   })
 }
 
+export const succeed = <A>(value: A): Parser<A> =>
+  new Parser((_, index) => Ok(index, value))
+
+export const fail = <A>(expected: Expected): Parser<A> =>
+  new Parser((_, index) => Error(index, expected))
+
 export const Ok = <A>(index: number, value: A): Ok<A> => ({
   ok: true,
   index,
