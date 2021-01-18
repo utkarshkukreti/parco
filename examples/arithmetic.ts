@@ -16,7 +16,9 @@ const Expr = Term.then(P(['+', '-']).then(Term).repeat()).map(([head, tail]) =>
   tail.reduce((acc, [op, x]) => (op === '+' ? acc + x : acc - x), head),
 )
 
-export default (string: string): number | null => {
-  const r = Expr.parse(string)
-  return r.ok && r.index === string.length ? r.value : null
+const Full = Expr.thenSkip(p.end())
+
+export default (string: string) => {
+  const r = Full.parse(string)
+  return r.ok ? r.value : r
 }

@@ -1109,7 +1109,16 @@ describe('examples', () => {
   })
 
   test('arithmetic', () => {
-    expect(Arithmetic('')).toMatchInlineSnapshot(`null`)
+    expect(Arithmetic('')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "/\\\\d+/",
+          "\\"(\\"",
+        ],
+        "index": 0,
+        "ok": false,
+      }
+    `)
     expect(Arithmetic('1')).toMatchInlineSnapshot(`1`)
     expect(Arithmetic('2*3')).toMatchInlineSnapshot(`6`)
     expect(Arithmetic('4+5*6')).toMatchInlineSnapshot(`34`)
@@ -1120,6 +1129,46 @@ describe('examples', () => {
     expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(
       `9990889199.019802`,
     )
+    expect(Arithmetic('a')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "/\\\\d+/",
+          "\\"(\\"",
+        ],
+        "index": 0,
+        "ok": false,
+      }
+    `)
+    expect(Arithmetic('1+')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "/\\\\d+/",
+          "\\"(\\"",
+        ],
+        "index": 2,
+        "ok": false,
+      }
+    `)
+    expect(Arithmetic('1*(')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "/\\\\d+/",
+          "\\"(\\"",
+        ],
+        "index": 3,
+        "ok": false,
+      }
+    `)
+    expect(Arithmetic('1*(((33)+')).toMatchInlineSnapshot(`
+      Object {
+        "expected": Array [
+          "/\\\\d+/",
+          "\\"(\\"",
+        ],
+        "index": 9,
+        "ok": false,
+      }
+    `)
   })
 })
 
