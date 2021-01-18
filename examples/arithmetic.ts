@@ -1,6 +1,6 @@
 import P, * as p from '../src'
 
-const Integer = P(/\d+/).map(Number)
+const Integer = p.regex(/\d+/, { expected: 'an integer' }).map(Number)
 
 const Factor: p.Parser<number> = Integer.or(
   p.lazy(() => Expr).wrap(P('('), P(')')),

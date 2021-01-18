@@ -1112,7 +1112,7 @@ describe('examples', () => {
     expect(Arithmetic('')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
-          "/\\\\d+/",
+          "an integer",
           "\\"(\\"",
         ],
         "index": 0,
@@ -1132,7 +1132,7 @@ describe('examples', () => {
     expect(Arithmetic('a')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
-          "/\\\\d+/",
+          "an integer",
           "\\"(\\"",
         ],
         "index": 0,
@@ -1142,7 +1142,7 @@ describe('examples', () => {
     expect(Arithmetic('1+')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
-          "/\\\\d+/",
+          "an integer",
           "\\"(\\"",
         ],
         "index": 2,
@@ -1152,7 +1152,7 @@ describe('examples', () => {
     expect(Arithmetic('1*(')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
-          "/\\\\d+/",
+          "an integer",
           "\\"(\\"",
         ],
         "index": 3,
@@ -1162,7 +1162,7 @@ describe('examples', () => {
     expect(Arithmetic('1*(((33)+')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
-          "/\\\\d+/",
+          "an integer",
           "\\"(\\"",
         ],
         "index": 9,
