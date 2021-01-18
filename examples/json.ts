@@ -9,17 +9,17 @@ const Number = P(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)
 const ch = (re: string, expected = re) =>
   p.regex(`[ \t\r\n]*${re}[ \t\r\n]*`, { expected })
 
-export const Value = p.or<Value>(
+export const Value: p.Parser<Value> = p.or<Value>(
   [String, Keyword, Number, p.lazy(() => Array.or(Object_))],
   { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
 )
 
-const Array: p.Parser<Value[]> = Value.repeat({ join: ch(',') }).wrap(
+const Array = Value.repeat({ join: ch(',') }).wrap(
   ch('\\[', '['),
   ch('\\]', ']'),
 )
 
-const Object_: p.Parser<[string, Value][]> = String.thenSkip(ch(':'))
+const Object_ = String.thenSkip(ch(':'))
   .then(Value)
   .repeat({ join: ch(',') })
   .wrap(ch('\\{', '{'), ch('\\}', '}'))
