@@ -24,8 +24,6 @@ const Object_: p.Parser<[string, Value][]> = String.thenSkip(ch(':'))
   .repeat({ join: ch(',') })
   .wrap(ch('\\{', '{'), ch('\\}', '}'))
 
-export default (string: string): Value | null => {
-  string = string.trim()
-  const r = Value.parse(string)
-  return r.ok && r.index === string.length ? r.value : null
-}
+export default Value.thenSkip(p.end()).pipe(Value => (string: string) =>
+  Value.parse(string.trim()),
+)

@@ -1093,18 +1093,18 @@ describe('examples', () => {
 
     for (const file of ys) {
       const input = fs.readFileSync(file, 'utf-8').trim()
-      expect(Json(input)).toBeTruthy()
+      expect(Json(input).ok).toEqual(true)
     }
 
     for (const file of ns) {
       const input = fs.readFileSync(file, 'utf-8').trim()
       // Some of these may throw an error due to stack overflow while parsing,
       // which is fine.
-      let ok = true
+      let ok = false
       try {
-        ok = Json(input) === null
+        ok = Json(input).ok
       } catch {}
-      expect(ok).toBeTruthy()
+      expect(ok).toEqual(false)
     }
   })
 
