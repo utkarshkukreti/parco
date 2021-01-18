@@ -22,7 +22,7 @@ const Array = Value.repeat({ join: ch(',') }).wrap(
 const Object_ = String.thenSkip(ch(':'))
   .then(Value)
   .repeat({ join: ch(',') })
-  .wrap(ch('\\{', '{'), ch('\\}', '}'))
+  .wrap(ch('{'), ch('}'))
 
 const Full = Value.thenSkip(p.end())
 
