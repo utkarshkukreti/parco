@@ -234,10 +234,10 @@ export const Ok = <A>(index: number, value: A): Ok<A> => ({
   value,
 })
 
-export const Error = (index: number, value: Expected): Error => ({
+export const Error = (index: number, expected: Expected): Error => ({
   ok: false,
   index,
-  expected: value,
+  expected,
 })
 
 export default p
