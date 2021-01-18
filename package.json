@@ -20,6 +20,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "umd:main": "dist/parco.umd.production.min.js",
+  "unpkg": "dist/parco.umd.production.min.js",
   "module": "dist/parco.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
