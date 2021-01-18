@@ -24,7 +24,7 @@
   "module": "dist/parco.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
+    "dist/{index,parco}.*",
     "src"
   ],
   "scripts": {

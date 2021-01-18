@@ -10,6 +10,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
-  },
-  "include": ["src", "tests"]
+  }
 }
