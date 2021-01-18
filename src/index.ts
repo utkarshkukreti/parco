@@ -219,10 +219,10 @@ export const or = <A, Input = string>(
   })
 }
 
-export const succeed = <A>(value: A): Parser<A> =>
+export const succeed = <A, Input>(value: A): Parser<A, Input> =>
   new Parser((_, index) => Ok(index, value))
 
-export const fail = <A>(expected: Expected): Parser<A> =>
+export const fail = <A, Input>(expected: Expected): Parser<A, Input> =>
   new Parser((_, index) => Error(index, expected))
 
 export const Ok = <A>(index: number, value: A): Ok<A> => ({
