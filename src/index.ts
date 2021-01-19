@@ -133,6 +133,17 @@ export class Parser<A, Input = string> {
     )
   }
 
+  chainRight<B>(
+    op: Parser<B, Input>,
+    fun: (l: A, op: B, r: A) => A,
+  ): Parser<A, Input> {
+    return this.then(op.then(this).repeat()).map(([head, tail]) => {
+      const as = [head].concat(tail.map(t => t[1]))
+      const ops = tail.map(t => t[0])
+      return as.reduceRight((acc, a, i) => fun(a, ops[i]!, acc))
+    })
+  }
+
   pipe<B>(fun: (_: this) => B): B {
     return fun(this)
   }

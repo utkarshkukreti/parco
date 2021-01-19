@@ -1129,6 +1129,13 @@ describe('examples', () => {
     expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(
       `9990889199.019802`,
     )
+    expect(Arithmetic('2**3')).toMatchInlineSnapshot(`8`)
+    expect(Arithmetic('2+3**4')).toMatchInlineSnapshot(`83`)
+    expect(Arithmetic('2+3**2**5')).toMatchInlineSnapshot(`1853020188851843`)
+    expect(Arithmetic('2+3**4+5**6')).toMatchInlineSnapshot(`15708`)
+    expect(Arithmetic('2+3**4+5**6**2')).toMatchInlineSnapshot(
+      `1.455191522836685e+25`,
+    )
     expect(Arithmetic('a')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [

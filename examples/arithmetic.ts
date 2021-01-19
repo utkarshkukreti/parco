@@ -2,9 +2,11 @@ import P, * as p from '../src'
 
 const Integer = p.regex(/\d+/, { expected: 'an integer' }).map(Number)
 
-const Expr2: p.Parser<number> = Integer.or(
+const Expr3: p.Parser<number> = Integer.or(
   p.lazy(() => Expr).wrap(P('('), P(')')),
 )
+
+const Expr2 = Expr3.chainRight(P(['**']), (l, _op, r) => l ** r)
 
 const Expr1 = Expr2.chainLeft(P(['*', '/']), (l, op, r) =>
   op === '*' ? l * r : l / r,
