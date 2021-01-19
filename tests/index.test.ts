@@ -1178,6 +1178,13 @@ describe('examples', () => {
         "ok": false,
       }
     `)
+    expect(Arithmetic('1!')).toMatchInlineSnapshot(`
+      Object {
+        "expected": "end of input",
+        "index": 1,
+        "ok": false,
+      }
+    `)
   })
 })
 
