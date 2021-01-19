@@ -1183,6 +1183,20 @@ describe('examples', () => {
     expect(Arithmetic('2+3**4+5**6**2')).toMatchInlineSnapshot(
       `1.455191522836685e+25`,
     )
+    expect(Arithmetic('-1')).toMatchInlineSnapshot(`-1`)
+    expect(Arithmetic('--2')).toMatchInlineSnapshot(`2`)
+    expect(Arithmetic('---3')).toMatchInlineSnapshot(`-3`)
+    expect(Arithmetic('-4----5')).toMatchInlineSnapshot(`1`)
+    expect(Arithmetic('6*-7/-8+9**-2')).toMatchInlineSnapshot(
+      `5.262345679012346`,
+    )
+    expect(Arithmetic('-3')).toMatchInlineSnapshot(`-3`)
+    expect(Arithmetic('~3')).toMatchInlineSnapshot(`-4`)
+    expect(Arithmetic('~-3')).toMatchInlineSnapshot(`2`)
+    expect(Arithmetic('-~3')).toMatchInlineSnapshot(`4`)
+    expect(Arithmetic('-~-3')).toMatchInlineSnapshot(`-2`)
+    expect(Arithmetic('~-~3')).toMatchInlineSnapshot(`-5`)
+    expect(Arithmetic('~-~3-~~4+4**~1+~8')).toMatchInlineSnapshot(`-17.9375`)
     expect(Arithmetic('a')).toMatchInlineSnapshot(`
       Object {
         "expected": Array [
