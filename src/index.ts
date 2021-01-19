@@ -141,11 +141,11 @@ export class Parser<A, Input = string> {
   }
 
   chainRight(op: Parser<(l: A, r: A) => A, Input>): Parser<A, Input> {
-    return this.then(op.then(this).repeat()).map(([head, tail]) => {
-      const as = [head].concat(tail.map(t => t[1]))
-      const ops = tail.map(t => t[0])
-      return as.reduceRight((acc, a, i) => ops[i]!(a, acc))
-    })
+    return this.then(op.then(this).repeat()).map(([head, tail]) =>
+      [head]
+        .concat(tail.map(t => t[1]))
+        .reduceRight((acc, a, i) => tail[i]![0](a, acc)),
+    )
   }
 
   pipe<B>(fun: (_: this) => B): B {
