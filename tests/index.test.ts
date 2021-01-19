@@ -875,6 +875,48 @@ test('Parser.join()', () => {
   `)
 })
 
+test('Parser.chainLeft() / Parser.chainRight()', () => {
+  const Integer = p.regex(/\d+/, { expected: 'an integer' })
+
+  const op = (op: string) =>
+    P(op).map(() => (l: string, r: string) => `(${op} ${l} ${r})`)
+
+  const expr: p.Parser<string> = Integer.chainRight(
+    p.or([op('**'), op('^^'), op('||')]),
+  ).chainLeft(p.or([op('+'), op('-')]))
+
+  const parse = (string: string) => {
+    const r = expr.parse(string)
+    return r.ok ? r.value : r
+  }
+
+  expect(parse('')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "an integer",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(parse('1+')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "an integer",
+      "index": 2,
+      "ok": false,
+    }
+  `)
+  expect(parse('123')).toMatchInlineSnapshot(`"123"`)
+  expect(parse('1+2-3')).toMatchInlineSnapshot(`"(- (+ 1 2) 3)"`)
+  expect(parse('1**2**3**4+5**6+7')).toMatchInlineSnapshot(
+    `"(+ (+ (** 1 (** 2 (** 3 4))) (** 5 6)) 7)"`,
+  )
+  expect(parse('1**2**3**4**5')).toMatchInlineSnapshot(
+    `"(** 1 (** 2 (** 3 (** 4 5))))"`,
+  )
+  expect(parse('1**2^^3^^4||5')).toMatchInlineSnapshot(
+    `"(** 1 (^^ 2 (^^ 3 (|| 4 5))))"`,
+  )
+})
+
 test('Parser.pipe()', () => {
   const bar: p.Parser<'bar'> = P('foo').pipe(foo => foo.map(() => 'bar'))
   ignore(bar)
