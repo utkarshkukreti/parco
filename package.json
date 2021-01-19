@@ -24,15 +24,15 @@
   "module": "dist/parco.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist/{index,parco}.*",
+    "dist",
     "src"
   ],
   "scripts": {
-    "build": "tsdx build --format cjs,esm,umd",
+    "build": "tsc && tsdx build --tsconfig tsconfig.tsdx.json --format cjs,esm,umd",
     "test": "tsdx test",
     "prepare": "yarn build",
     "format": "prettier --write .",
-    "bench:json": "tsc -P tsconfig.cjs.json && node dist/benchmarks/json.js",
+    "bench:json": "ts-node -O \"{\\\"module\\\": \\\"commonjs\\\"}\" -T benchmarks/json.ts",
     "lint": "tsdx lint examples src tests"
   },
   "devDependencies": {
