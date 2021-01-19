@@ -103,10 +103,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  repeat<B>({ join }: { join?: Parser<B, Input> } = {}): Parser<A[], Input> {
-    if (join) {
-      return this.join(join)
-    }
+  repeat(): Parser<A[], Input> {
     return new Parser((input, index) => {
       const value = []
       for (;;) {

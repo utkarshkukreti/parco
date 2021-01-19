@@ -777,8 +777,10 @@ test('Parser.repeat()', () => {
       "ok": false,
     }
   `)
+})
 
-  const as: p.Parser<'a'[]> = P('a').repeat({ join: P(';').then(P(';')) })
+test('Parser.join()', () => {
+  const as: p.Parser<'a'[]> = P('a').join(P(';').then(P(';')))
 
   expect(as.parse('')).toMatchInlineSnapshot(`
     Object {
