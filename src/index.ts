@@ -104,20 +104,33 @@ export class Parser<A, Input = string> {
   }
 
   repeat<B>({ join }: { join?: Parser<B, Input> } = {}): Parser<A[], Input> {
+    if (join) {
+      return this.join(join)
+    }
     return new Parser((input, index) => {
       const value = []
-      for (let i = 0; ; i++) {
-        let r
-        if (join && i > 0) {
-          const rb = join.fun(input, index)
-          if (!rb.ok) return rb.index === index ? Ok(index, value) : rb
-          index = rb.index
-          r = this.fun(input, index)
-          if (!r.ok) return r
-        } else {
-          r = this.fun(input, index)
-          if (!r.ok) return r.index === index ? Ok(index, value) : r
-        }
+      for (;;) {
+        const r = this.fun(input, index)
+        if (!r.ok) return r.index === index ? Ok(index, value) : r
+        value.push(r.value)
+        index = r.index
+      }
+    })
+  }
+
+  join<B>(b: Parser<B, Input>): Parser<A[], Input> {
+    return new Parser((input, index) => {
+      const value: A[] = []
+      const r = this.fun(input, index)
+      if (!r.ok) return r.index === index ? Ok(index, value) : r
+      value.push(r.value)
+      index = r.index
+      for (;;) {
+        const rb = b.fun(input, index)
+        if (!rb.ok) return rb.index === index ? Ok(index, value) : rb
+        index = rb.index
+        const r = this.fun(input, index)
+        if (!r.ok) return r
         value.push(r.value)
         index = r.index
       }
