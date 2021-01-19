@@ -134,23 +134,17 @@ export class Parser<A, Input = string> {
     })
   }
 
-  chainLeft<B>(
-    op: Parser<B, Input>,
-    fun: (l: A, op: B, r: A) => A,
-  ): Parser<A, Input> {
+  chainLeft(op: Parser<(l: A, r: A) => A, Input>): Parser<A, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
-      tail.reduce((acc, [op, x]) => fun(acc, op, x), head),
+      tail.reduce((acc, [op, x]) => op(acc, x), head),
     )
   }
 
-  chainRight<B>(
-    op: Parser<B, Input>,
-    fun: (l: A, op: B, r: A) => A,
-  ): Parser<A, Input> {
+  chainRight(op: Parser<(l: A, r: A) => A, Input>): Parser<A, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) => {
       const as = [head].concat(tail.map(t => t[1]))
       const ops = tail.map(t => t[0])
-      return as.reduceRight((acc, a, i) => fun(a, ops[i]!, acc))
+      return as.reduceRight((acc, a, i) => ops[i]!(a, acc))
     })
   }
 
