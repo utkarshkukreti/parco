@@ -1128,6 +1128,9 @@ describe('examples', () => {
     expect(Arithmetic('((10)+(9*8-7*6)*(5))-4-3-(2-1)')).toMatchInlineSnapshot(
       `152`,
     )
+    expect(Arithmetic('1+2*3/4-5-6/7*8/9')).toMatchInlineSnapshot(
+      `-3.261904761904762`,
+    )
     expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(
       `9990889199.019802`,
     )
