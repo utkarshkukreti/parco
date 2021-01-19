@@ -2,15 +2,15 @@ import P, * as p from '../src'
 
 const Integer = p.regex(/\d+/, { expected: 'an integer' }).map(Number)
 
-const Factor: p.Parser<number> = Integer.or(
+const Expr2: p.Parser<number> = Integer.or(
   p.lazy(() => Expr).wrap(P('('), P(')')),
 )
 
-const Term = Factor.chainLeft(P(['*', '/']), (l, op, r) =>
+const Expr1 = Expr2.chainLeft(P(['*', '/']), (l, op, r) =>
   op === '*' ? l * r : l / r,
 )
 
-const Expr = Term.chainLeft(P(['+', '-']), (l, op, r) =>
+const Expr = Expr1.chainLeft(P(['+', '-']), (l, op, r) =>
   op === '+' ? l + r : l - r,
 )
 
