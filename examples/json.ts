@@ -1,4 +1,4 @@
-import P, * as p from '../src'
+import P, * as p from '../src/index'
 
 export type Value = string | Value[] | [string, Value][]
 

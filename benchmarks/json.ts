@@ -1,4 +1,4 @@
-import * as Benchmark from 'benchmark'
+import Benchmark from 'benchmark'
 
 import Json from '../examples/json'
 import Sample from './json.sample'

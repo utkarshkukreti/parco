@@ -18,46 +18,42 @@
   ],
   "homepage": "https://github.com/utkarshkukreti/parco",
   "license": "MIT",
-  "main": "dist/index.js",
-  "umd:main": "dist/parco.umd.production.min.js",
-  "unpkg": "dist/parco.umd.production.min.js",
-  "module": "dist/parco.esm.js",
+  "type": "module",
+  "main": "dist/parco.umd.js",
+  "module": "dist/parco.es.js",
+  "exports": {
+    ".": {
+      "require": "./dist/parco.umd.js",
+      "import": "./dist/parco.es.js"
+    }
+  },
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "tsc && tsdx build --tsconfig tsconfig.tsdx.json --format cjs,esm,umd",
-    "test": "tsdx test",
+    "build": "tsc && vite build && tsc -P tsconfig.dts.json",
+    "test": "jest --coverage",
     "prepare": "yarn build",
     "format": "prettier --write .",
-    "bench:json": "ts-node -O \"{\\\"module\\\": \\\"commonjs\\\"}\" -T benchmarks/json.ts",
-    "lint": "tsdx lint examples src tests"
+    "bench:json": "node --no-warnings --loader ts-node/esm --experimental-specifier-resolution=node benchmarks/json.ts"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.0",
+    "@types/jest": "^26.0.23",
     "benchmark": "^2.1.4",
-    "eslint-plugin-prettier": "^3.3.1",
-    "globby": "^11.0.2",
+    "globby": "^11.0.3",
+    "jest": "^26.6.3",
     "json-test-suite": "^0.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "prettier-plugin-sorted": "^2.0.0",
-    "snowpack": "^3.0.11",
+    "ts-jest": "^26.5.6",
     "ts-node": "^9.1.1",
-    "tsdx": "^0.14.1",
-    "typescript": "^4.1.3"
+    "typescript": "^4.2.4",
+    "vite": "^2.3.3"
   },
   "resolutions": {
-    "**/@typescript-eslint/eslint-plugin": "^4.13.0",
-    "**/@typescript-eslint/parser": "^4.13.0",
-    "**/jest": "^26.6.3",
-    "**/ts-jest": "^26.4.4",
-    "**/typescript": "^4.1.3"
-  },
-  "browserslist": [
-    "defaults",
-    "not IE 11",
-    "maintained node versions"
-  ]
+    "**/import-sort-parser-typescript/typescript": "*"
+  }
 }
