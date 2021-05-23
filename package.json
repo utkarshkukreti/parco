@@ -19,14 +19,9 @@
   "homepage": "https://github.com/utkarshkukreti/parco",
   "license": "MIT",
   "type": "module",
-  "main": "dist/parco.umd.js",
-  "module": "dist/parco.es.js",
-  "exports": {
-    ".": {
-      "require": "./dist/parco.umd.js",
-      "import": "./dist/parco.es.js"
-    }
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": "./dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
