@@ -11,6 +11,6 @@ export default defineConfig({
         entryFileNames: 'index.js',
       },
     },
-    sourcemap: true,
+    minify: false,
   },
 })
