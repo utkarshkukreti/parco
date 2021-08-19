@@ -1,2 +1,2 @@
 /benchmarks/json.sample.ts -diff
-/yarn.lock -diff
+/pnpm-lock.yaml -diff
