@@ -32,6 +32,7 @@
     "test": "jest --coverage",
     "prepare": "pnpm build",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "bench:json": "node --no-warnings --loader ts-node/esm --experimental-specifier-resolution=node benchmarks/json.ts"
   },
   "devDependencies": {
