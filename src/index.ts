@@ -226,6 +226,23 @@ export const regex = (
   })
 }
 
+export const regex_ = (
+  arg: RegExp | string,
+  { expected: expected_ }: { expected?: Expected } = {},
+): Parser<void> => {
+  const [source, flags] =
+    typeof arg === 'string'
+      ? [arg, '']
+      : [arg.source, arg.flags.replace(/y|g/g, '')]
+  const expected = expected_ || `/${source}/${flags}`
+  const regex = new RegExp(source, flags + 'y')
+  return new Parser((input, index) => {
+    regex.lastIndex = index
+    if (regex.test(input)) return Ok(regex.lastIndex, undefined)
+    return Error(index, expected)
+  })
+}
+
 export const end = (): Parser<void, string> =>
   new Parser((input, index) =>
     index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
