@@ -1,9 +1,9 @@
-export type Result<A> = Ok<A> | Error
+export type Result<Output> = Ok<Output> | Error
 
-export type Ok<A> = {
+export type Ok<Output> = {
   ok: true
   index: number
-  value: A
+  value: Output
 }
 
 export type Error = {
@@ -14,14 +14,14 @@ export type Error = {
 
 export type Expected = string | Expected[]
 
-export class Parser<A, Input = string> {
-  constructor(readonly fun: (input: Input, index: number) => Result<A>) {}
+export class Parser<Output, Input = string> {
+  constructor(readonly fun: (input: Input, index: number) => Result<Output>) {}
 
-  parse(input: Input, index = 0): Result<A> {
+  parse(input: Input, index = 0): Result<Output> {
     return this.fun(input, index)
   }
 
-  map<B>(fun: (a: A) => B): Parser<B, Input> {
+  map<B>(fun: (a: Output) => B): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -29,7 +29,10 @@ export class Parser<A, Input = string> {
     })
   }
 
-  filter(fun: (a: A) => boolean, expected: Expected): Parser<A, Input> {
+  filter(
+    fun: (a: Output) => boolean,
+    expected: Expected,
+  ): Parser<Output, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok || fun(r.value)) return r
@@ -37,15 +40,15 @@ export class Parser<A, Input = string> {
     })
   }
 
-  optional<B>(default_: B): Parser<A | B, Input> {
-    return new Parser<A | B, Input>((input, index) => {
+  optional<B>(default_: B): Parser<Output | B, Input> {
+    return new Parser<Output | B, Input>((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
       return Ok(index, default_)
     })
   }
 
-  bind<B>(b: (a: A) => Parser<B, Input>): Parser<B, Input> {
+  bind<B>(b: (a: Output) => Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -53,7 +56,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  then<B>(b: Parser<B, Input>): Parser<[A, B], Input> {
+  then<B>(b: Parser<B, Input>): Parser<[Output, B], Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -63,7 +66,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  thenSkip<B>(b: Parser<B, Input>): Parser<A, Input> {
+  thenSkip<B>(b: Parser<B, Input>): Parser<Output, Input> {
     return new Parser((input, index) => {
       const r = this.fun(input, index)
       if (!r.ok) return r
@@ -81,7 +84,10 @@ export class Parser<A, Input = string> {
     })
   }
 
-  between<B, C>(b: Parser<B, Input>, c: Parser<C, Input>): Parser<A, Input> {
+  between<B, C>(
+    b: Parser<B, Input>,
+    c: Parser<C, Input>,
+  ): Parser<Output, Input> {
     return new Parser((input, index) => {
       const rb = b.fun(input, index)
       if (!rb.ok) return rb
@@ -93,8 +99,8 @@ export class Parser<A, Input = string> {
     })
   }
 
-  or<B>(b: Parser<B, Input>): Parser<A | B, Input> {
-    return new Parser<A | B, Input>((input, index) => {
+  or<B>(b: Parser<B, Input>): Parser<Output | B, Input> {
+    return new Parser<Output | B, Input>((input, index) => {
       const r = this.fun(input, index)
       if (r.ok || r.index > index) return r
       const rb = b.fun(input, index)
@@ -103,7 +109,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  repeat(): Parser<A[], Input> {
+  repeat(): Parser<Output[], Input> {
     return new Parser((input, index) => {
       const value = []
       for (;;) {
@@ -115,9 +121,9 @@ export class Parser<A, Input = string> {
     })
   }
 
-  join<B>(b: Parser<B, Input>): Parser<A[], Input> {
+  join<B>(b: Parser<B, Input>): Parser<Output[], Input> {
     return new Parser((input, index) => {
-      const value: A[] = []
+      const value: Output[] = []
       const r = this.fun(input, index)
       if (!r.ok) return r.index === index ? Ok(index, value) : r
       value.push(r.value)
@@ -134,13 +140,17 @@ export class Parser<A, Input = string> {
     })
   }
 
-  chainLeft(op: Parser<(l: A, r: A) => A, Input>): Parser<A, Input> {
+  chainLeft(
+    op: Parser<(l: Output, r: Output) => Output, Input>,
+  ): Parser<Output, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       tail.reduce((acc, [op, x]) => op(acc, x), head),
     )
   }
 
-  chainRight(op: Parser<(l: A, r: A) => A, Input>): Parser<A, Input> {
+  chainRight(
+    op: Parser<(l: Output, r: Output) => Output, Input>,
+  ): Parser<Output, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       [head]
         .concat(tail.map(t => t[1]))
@@ -154,22 +164,21 @@ export class Parser<A, Input = string> {
 }
 
 export type P = {
-  <A, Input = string>(a: (input: Input, index: number) => Result<A>): Parser<
-    A,
-    Input
-  >
-  <A extends string>(a: A | A[]): Parser<A, string>
+  <Output, Input = string>(
+    a: (input: Input, index: number) => Result<Output>,
+  ): Parser<Output, Input>
+  <Output extends string>(a: Output | Output[]): Parser<Output, string>
   (a: RegExp): Parser<string, string>
-  <A, Input = string>(a: Parser<A, Input>): Parser<A, Input>
+  <Output, Input = string>(a: Parser<Output, Input>): Parser<Output, Input>
 }
 
-export const p: P = <A, Input>(
+export const p: P = <Output, Input>(
   a:
-    | ((input: Input, index: number) => Result<A>)
+    | ((input: Input, index: number) => Result<Output>)
     | string
     | string[]
     | RegExp
-    | Parser<A, Input>,
+    | Parser<Output, Input>,
 ) =>
   typeof a === 'function'
     ? new Parser(a)
@@ -179,7 +188,9 @@ export const p: P = <A, Input>(
     ? regex(a)
     : a
 
-export const string = <A extends string>(arg: A | A[]): Parser<A> => {
+export const string = <Output extends string>(
+  arg: Output | Output[],
+): Parser<Output> => {
   if (Array.isArray(arg)) {
     const expected = arg.map(a => JSON.stringify(a))
     const re = arg
@@ -188,7 +199,7 @@ export const string = <A extends string>(arg: A | A[]): Parser<A> => {
       .map(escapeRegex)
       .join('|')
     // This `as` is sound as long as our regex construction above is correct!
-    return regex(re, { expected }) as Parser<A>
+    return regex(re, { expected }) as Parser<Output>
   }
   const expected = JSON.stringify(arg)
   return new Parser((input, index) => {
@@ -220,13 +231,14 @@ export const end = (): Parser<void, string> =>
     index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
   )
 
-export const lazy = <A, Input>(p: () => Parser<A, Input>): Parser<A, Input> =>
-  new Parser((input, index) => p().fun(input, index))
+export const lazy = <Output, Input>(
+  p: () => Parser<Output, Input>,
+): Parser<Output, Input> => new Parser((input, index) => p().fun(input, index))
 
-export const or = <A, Input = string>(
-  ps: Parser<A, Input>[],
+export const or = <Output, Input = string>(
+  ps: Parser<Output, Input>[],
   { expected }: { expected?: Expected } = {},
-): Parser<A, Input> => {
+): Parser<Output, Input> => {
   if (expected) {
     return new Parser((input, index) => {
       for (const p of ps) {
@@ -248,13 +260,14 @@ export const or = <A, Input = string>(
   })
 }
 
-export const succeed = <A, Input>(value: A): Parser<A, Input> =>
+export const succeed = <Output, Input>(value: Output): Parser<Output, Input> =>
   new Parser((_, index) => Ok(index, value))
 
-export const fail = <A, Input>(expected: Expected): Parser<A, Input> =>
-  new Parser((_, index) => Error(index, expected))
+export const fail = <Output, Input>(
+  expected: Expected,
+): Parser<Output, Input> => new Parser((_, index) => Error(index, expected))
 
-export const Ok = <A>(index: number, value: A): Ok<A> => ({
+export const Ok = <Output>(index: number, value: Output): Ok<Output> => ({
   ok: true,
   index,
   value,
