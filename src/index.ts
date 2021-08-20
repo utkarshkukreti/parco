@@ -208,16 +208,24 @@ export const string = <Output extends string>(
   })
 }
 
-export const regex = (
+const _regex = (
   arg: RegExp | string,
-  { expected: expected_ }: { expected?: Expected } = {},
-): Parser<string> => {
+  expected_: Expected | undefined,
+): [RegExp, Expected] => {
   const [source, flags] =
     typeof arg === 'string'
       ? [arg, '']
       : [arg.source, arg.flags.replace(/y|g/g, '')]
   const expected = expected_ || `/${source}/${flags}`
   const regex = new RegExp(source, flags + 'y')
+  return [regex, expected]
+}
+
+export const regex = (
+  arg: RegExp | string,
+  { expected: expected_ }: { expected?: Expected } = {},
+): Parser<string> => {
+  const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
     const match = regex.exec(input)?.[0]
@@ -230,12 +238,7 @@ export const regex_ = (
   arg: RegExp | string,
   { expected: expected_ }: { expected?: Expected } = {},
 ): Parser<void> => {
-  const [source, flags] =
-    typeof arg === 'string'
-      ? [arg, '']
-      : [arg.source, arg.flags.replace(/y|g/g, '')]
-  const expected = expected_ || `/${source}/${flags}`
-  const regex = new RegExp(source, flags + 'y')
+  const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
     if (regex.test(input)) return Ok(regex.lastIndex, undefined)
