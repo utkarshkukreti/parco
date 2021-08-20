@@ -9,17 +9,20 @@ const Number = P(/-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/)
 const ch = (re: string, expected = re) =>
   p.regex(`[ \t\r\n]*${re}[ \t\r\n]*`, { expected })
 
-const Value: p.Parser<Value> = p.or<Value>(
-  [String, Keyword, Number, p.lazy(() => Array.or(Object_))],
-  { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
-)
-
-const Array = Value.join(ch(',')).between(ch('\\[', '['), ch('\\]', ']'))
+const Array = p
+  .lazy(() => Value)
+  .join(ch(','))
+  .between(ch('\\[', '['), ch('\\]', ']'))
 
 const Object_ = String.thenSkip(ch(':'))
-  .then(Value)
+  .then(p.lazy(() => Value))
   .join(ch(','))
   .between(ch('{'), ch('}'))
+
+const Value: p.Parser<Value> = p.or<Value>(
+  [String, Keyword, Number, Array, Object_],
+  { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
+)
 
 const Full = Value.thenSkip(p.end())
 
