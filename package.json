@@ -39,7 +39,6 @@
     "@types/benchmark": "^2.1.1",
     "@types/jest": "^27.0.1",
     "benchmark": "^2.1.4",
-    "globby": "^11.0.4",
     "jest": "^27.0.6",
     "json-test-suite": "^0.1.0",
     "prettier": "^2.3.2",

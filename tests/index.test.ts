@@ -1,7 +1,5 @@
 import * as fs from 'fs'
 
-import * as globby from 'globby'
-
 import Arithmetic from '../examples/arithmetic'
 import Json from '../examples/json'
 import P, * as p from '../src'
@@ -1129,19 +1127,25 @@ describe('examples', () => {
   })
 
   test('json: json-test-suite', () => {
-    const ys = globby.sync('node_modules/json-test-suite/test_parsing/y_*.json')
-    const ns = globby.sync('node_modules/json-test-suite/test_parsing/n_*.json')
+    const read = (startsWith: string) => {
+      const path = 'node_modules/json-test-suite/test_parsing'
+      return fs
+        .readdirSync(path)
+        .filter(file => file.startsWith(startsWith))
+        .map(file => fs.readFileSync(path + '/' + file, 'utf-8'))
+    }
+
+    const ys = read('y_')
+    const ns = read('n_')
 
     expect(ys).toHaveLength(95)
     expect(ns).toHaveLength(188)
 
-    for (const file of ys) {
-      const input = fs.readFileSync(file, 'utf-8').trim()
+    for (const input of ys) {
       expect(Json(input).ok).toEqual(true)
     }
 
-    for (const file of ns) {
-      const input = fs.readFileSync(file, 'utf-8').trim()
+    for (const input of ns) {
       // Some of these may throw an error due to stack overflow while parsing,
       // which is fine.
       let ok = false
