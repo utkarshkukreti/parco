@@ -8,7 +8,7 @@ const Binary = (op: string, fun: (l: number, r: number) => number) =>
 const Unary = (op: string, fun: (x: number) => number) => P(op).map(() => fun)
 
 const Expr: p.Parser<number> = Integer.or(
-  p.lazy(() => Expr).wrap(P('('), P(')')),
+  p.lazy(() => Expr).between(P('('), P(')')),
 )
   .pipe(x =>
     p

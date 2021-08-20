@@ -81,7 +81,7 @@ export class Parser<A, Input = string> {
     })
   }
 
-  wrap<B, C>(b: Parser<B, Input>, c: Parser<C, Input>): Parser<A, Input> {
+  between<B, C>(b: Parser<B, Input>, c: Parser<C, Input>): Parser<A, Input> {
     return new Parser((input, index) => {
       const rb = b.fun(input, index)
       if (!rb.ok) return rb

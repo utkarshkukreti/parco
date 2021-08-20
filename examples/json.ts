@@ -14,12 +14,12 @@ const Value: p.Parser<Value> = p.or<Value>(
   { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
 )
 
-const Array = Value.join(ch(',')).wrap(ch('\\[', '['), ch('\\]', ']'))
+const Array = Value.join(ch(',')).between(ch('\\[', '['), ch('\\]', ']'))
 
 const Object_ = String.thenSkip(ch(':'))
   .then(Value)
   .join(ch(','))
-  .wrap(ch('{'), ch('}'))
+  .between(ch('{'), ch('}'))
 
 const Full = Value.thenSkip(p.end())
 
