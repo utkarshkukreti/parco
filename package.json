@@ -1,6 +1,6 @@
 {
   "name": "parco",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "A hyper-optimized 1kb library to build fully type-safe parsers in TypeScript.",
   "keywords": [
     "combinator",
