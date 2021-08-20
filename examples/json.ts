@@ -20,8 +20,8 @@ const Object_ = String.thenSkip(ch(':'))
   .between(ch('{'), ch('}'))
 
 const Value: p.Parser<Value> = p.or<Value>(
-  [String, Keyword, Number, Array, Object_],
-  { expected: ['a string', 'a keyword', 'a number', 'an array', 'an object'] },
+  [String, Number, Object_, Array, Keyword],
+  { expected: ['a string', 'a number', 'an object', 'an array', 'a keyword'] },
 )
 
 const Full = Value.thenSkip(p.end())

@@ -1061,10 +1061,10 @@ describe('examples', () => {
       Object {
         "expected": Array [
           "a string",
-          "a keyword",
           "a number",
-          "an array",
           "an object",
+          "an array",
+          "a keyword",
         ],
         "index": 0,
         "ok": false,
