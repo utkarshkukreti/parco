@@ -141,20 +141,20 @@ export class Parser<Output, Input = string> {
   }
 
   chainLeft(
-    op: Parser<(l: Output, r: Output) => Output, Input>,
+    op: Parser<(left: Output, right: Output) => Output, Input>,
   ): Parser<Output, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
-      tail.reduce((acc, [op, x]) => op(acc, x), head),
+      tail.reduce((acc, [op, right]) => op(acc, right), head),
     )
   }
 
   chainRight(
-    op: Parser<(l: Output, r: Output) => Output, Input>,
+    op: Parser<(left: Output, right: Output) => Output, Input>,
   ): Parser<Output, Input> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       [head]
         .concat(tail.map(t => t[1]))
-        .reduceRight((acc, a, i) => tail[i]![0](a, acc)),
+        .reduceRight((acc, left, i) => tail[i]![0](left, acc)),
     )
   }
 
