@@ -214,52 +214,50 @@ test('regex', () => {
 })
 
 test('regex_', () => {
-  const ints: p.Parser<void>[] = [p.regex_(/\d+/), p.regex_('\\d+')]
+  const int: p.Parser<void> = p.regex_(/\d+/)
 
-  for (const int of ints) {
-    expect(int.parse('')).toMatchInlineSnapshot(`
-      Object {
-        "expected": "/\\\\d+/",
-        "index": 0,
-        "ok": false,
-      }
-    `)
-    expect(int.parse('1')).toMatchInlineSnapshot(`
-      Object {
-        "index": 1,
-        "ok": true,
-        "value": undefined,
-      }
-    `)
-    expect(int.parse('123')).toMatchInlineSnapshot(`
-      Object {
-        "index": 3,
-        "ok": true,
-        "value": undefined,
-      }
-    `)
-    expect(int.parse(' 123')).toMatchInlineSnapshot(`
-      Object {
-        "expected": "/\\\\d+/",
-        "index": 0,
-        "ok": false,
-      }
-    `)
-    expect(int.parse('123 456')).toMatchInlineSnapshot(`
-      Object {
-        "index": 3,
-        "ok": true,
-        "value": undefined,
-      }
-    `)
-    expect(int.parse('abc')).toMatchInlineSnapshot(`
-      Object {
-        "expected": "/\\\\d+/",
-        "index": 0,
-        "ok": false,
-      }
-    `)
-  }
+  expect(int.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "/\\\\d+/",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(int.parse('1')).toMatchInlineSnapshot(`
+    Object {
+      "index": 1,
+      "ok": true,
+      "value": undefined,
+    }
+  `)
+  expect(int.parse('123')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": undefined,
+    }
+  `)
+  expect(int.parse(' 123')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "/\\\\d+/",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(int.parse('123 456')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": undefined,
+    }
+  `)
+  expect(int.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "/\\\\d+/",
+      "index": 0,
+      "ok": false,
+    }
+  `)
 
   const foo: p.Parser<void> = p.regex_(/foo/giy)
   expect(foo.parse('FO o')).toMatchInlineSnapshot(`
