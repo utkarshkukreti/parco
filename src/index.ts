@@ -229,7 +229,7 @@ export const regex = (
   return new Parser((input, index) => {
     regex.lastIndex = index
     const match = regex.exec(input)?.[0]
-    if (match !== undefined) return Ok(index + match.length, match)
+    if (match !== undefined) return Ok(regex.lastIndex, match)
     return Error(index, expected)
   })
 }
