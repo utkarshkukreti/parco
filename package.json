@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "build": "tsc && vite build && tsc -P tsconfig.dts.json",
-    "test": "jest --coverage",
+    "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "prepare": "pnpm build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
