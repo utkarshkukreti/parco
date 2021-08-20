@@ -84,18 +84,18 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  between<B, C>(
-    b: Parser<B, Input>,
-    c: Parser<C, Input>,
+  between<Before, After>(
+    before: Parser<Before, Input>,
+    after: Parser<After, Input>,
   ): Parser<Output, Input> {
     return new Parser((input, index) => {
-      const rb = b.fun(input, index)
+      const rb = before.fun(input, index)
       if (!rb.ok) return rb
       const r = this.fun(input, rb.index)
       if (!r.ok) return r
-      const rc = c.fun(input, r.index)
-      if (!rc.ok) return rc
-      return Ok(rc.index, r.value)
+      const ra = after.fun(input, r.index)
+      if (!ra.ok) return ra
+      return Ok(ra.index, r.value)
     })
   }
 
