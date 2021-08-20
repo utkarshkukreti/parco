@@ -14,13 +14,13 @@ const Array = p
   .join(ch(','))
   .between(ch('\\[', '['), ch('\\]', ']'))
 
-const Object_ = String.thenSkip(ch(':'))
+const Object = String.thenSkip(ch(':'))
   .then(p.lazy(() => Value))
   .join(ch(','))
   .between(ch('{'), ch('}'))
 
 const Value: p.Parser<Value> = p.or<Value>(
-  [String, Number, Object_, Array, Keyword],
+  [String, Number, Object, Array, Keyword],
   { expected: ['a string', 'a number', 'an object', 'an array', 'a keyword'] },
 )
 
