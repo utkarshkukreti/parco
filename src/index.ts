@@ -228,8 +228,8 @@ export const regex = (
   const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
-    const match = regex.exec(input)?.[0]
-    if (match !== undefined) return Ok(regex.lastIndex, match)
+    if (regex.test(input))
+      return Ok(regex.lastIndex, input.slice(index, regex.lastIndex))
     return Error(index, expected)
   })
 }
