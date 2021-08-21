@@ -237,7 +237,7 @@ export const regex = (
 export const regex_ = (
   arg: RegExp | string,
   { expected: expected_ }: { expected?: Expected } = {},
-): Parser<void> => {
+): Parser<undefined> => {
   const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
@@ -246,7 +246,7 @@ export const regex_ = (
   })
 }
 
-export const end = (): Parser<void, string> =>
+export const end = (): Parser<undefined, string> =>
   new Parser((input, index) =>
     index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
   )

@@ -214,7 +214,7 @@ test('regex', () => {
 })
 
 test('regex_', () => {
-  const int: p.Parser<void> = p.regex_(/\d+/)
+  const int: p.Parser<undefined> = p.regex_(/\d+/)
 
   expect(int.parse('')).toMatchInlineSnapshot(`
     Object {
@@ -259,7 +259,7 @@ test('regex_', () => {
     }
   `)
 
-  const foo: p.Parser<void> = p.regex_(/foo/giy)
+  const foo: p.Parser<undefined> = p.regex_(/foo/giy)
   expect(foo.parse('FO o')).toMatchInlineSnapshot(`
     Object {
       "expected": "/foo/i",
