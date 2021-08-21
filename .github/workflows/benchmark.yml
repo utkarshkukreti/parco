@@ -1,0 +1,25 @@
+name: Benchmark
+
+on: [push]
+
+jobs:
+  benchmark:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - run: npm i -g pnpm
+      - run: git checkout ${{ github.event.before }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm bench:json 10 && pnpm bench:json 10 && pnpm bench:json 10
+      - run: git checkout -
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm bench:json 10 && pnpm bench:json 10 && pnpm bench:json 10
