@@ -1,14 +1,15 @@
-import P, * as p from '../src'
+import * as p from '../src'
 
 const Integer = p.regex(/\d+/, { expected: 'an integer' }).map(Number)
 
 const Binary = (op: string, fun: (l: number, r: number) => number) =>
-  P(op).map(() => fun)
+  p.string(op).map(() => fun)
 
-const Unary = (op: string, fun: (x: number) => number) => P(op).map(() => fun)
+const Unary = (op: string, fun: (x: number) => number) =>
+  p.string(op).map(() => fun)
 
 const Expr: p.Parser<number> = Integer.or(
-  p.lazy(() => Expr).between(P('('), P(')')),
+  p.lazy(() => Expr).between(p.string('('), p.string(')')),
 )
   .pipe(x =>
     p

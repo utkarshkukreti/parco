@@ -163,31 +163,6 @@ export class Parser<Output, Input = string> {
   }
 }
 
-export type P = {
-  <Output, Input = string>(
-    a: (input: Input, index: number) => Result<Output>,
-  ): Parser<Output, Input>
-  <Output extends string>(a: Output | Output[]): Parser<Output, string>
-  (a: RegExp): Parser<string, string>
-  <Output, Input = string>(a: Parser<Output, Input>): Parser<Output, Input>
-}
-
-export const p: P = <Output, Input>(
-  a:
-    | ((input: Input, index: number) => Result<Output>)
-    | string
-    | string[]
-    | RegExp
-    | Parser<Output, Input>,
-) =>
-  typeof a === 'function'
-    ? new Parser(a)
-    : typeof a === 'string' || Array.isArray(a)
-    ? string(a)
-    : a instanceof RegExp
-    ? regex(a)
-    : a
-
 export const string = <Output extends string>(
   arg: Output | Output[],
 ): Parser<Output> => {
@@ -298,8 +273,6 @@ export const Error = (index: number, expected: Expected): Error => ({
   index,
   expected,
 })
-
-export default p
 
 const escapeRegex = (string: string) =>
   string.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
