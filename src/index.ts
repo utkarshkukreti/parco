@@ -15,15 +15,15 @@ export type Error = {
 export type Expected = string | Expected[]
 
 export class Parser<Output, Input = string> {
-  constructor(readonly fun: (input: Input, index: number) => Result<Output>) {}
+  constructor(readonly run: (input: Input, index: number) => Result<Output>) {}
 
   parse(input: Input, index = 0): Result<Output> {
-    return this.fun(input, index)
+    return this.run(input, index)
   }
 
   map<B>(fun: (a: Output) => B): Parser<B, Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r
       return Ok(r.index, fun(r.value))
     })
@@ -34,7 +34,7 @@ export class Parser<Output, Input = string> {
     expected: Expected,
   ): Parser<Output, Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok || fun(r.value)) return r
       return Error(r.index, expected)
     })
@@ -42,7 +42,7 @@ export class Parser<Output, Input = string> {
 
   optional<B>(default_: B): Parser<Output | B, Input> {
     return new Parser<Output | B, Input>((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (r.ok || r.index > index) return r
       return Ok(index, default_)
     })
@@ -50,17 +50,17 @@ export class Parser<Output, Input = string> {
 
   bind<B>(b: (a: Output) => Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r
-      return b(r.value).fun(input, r.index)
+      return b(r.value).run(input, r.index)
     })
   }
 
   then<B>(b: Parser<B, Input>): Parser<[Output, B], Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r
-      const rb = b.fun(input, r.index)
+      const rb = b.run(input, r.index)
       if (!rb.ok) return rb
       return Ok(rb.index, [r.value, rb.value])
     })
@@ -68,9 +68,9 @@ export class Parser<Output, Input = string> {
 
   thenSkip<B>(b: Parser<B, Input>): Parser<Output, Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r
-      const rb = b.fun(input, r.index)
+      const rb = b.run(input, r.index)
       if (!rb.ok) return rb
       return Ok(rb.index, r.value)
     })
@@ -78,9 +78,9 @@ export class Parser<Output, Input = string> {
 
   skipThen<B>(b: Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r
-      return b.fun(input, r.index)
+      return b.run(input, r.index)
     })
   }
 
@@ -89,11 +89,11 @@ export class Parser<Output, Input = string> {
     after: Parser<After, Input>,
   ): Parser<Output, Input> {
     return new Parser((input, index) => {
-      const rb = before.fun(input, index)
+      const rb = before.run(input, index)
       if (!rb.ok) return rb
-      const r = this.fun(input, rb.index)
+      const r = this.run(input, rb.index)
       if (!r.ok) return r
-      const ra = after.fun(input, r.index)
+      const ra = after.run(input, r.index)
       if (!ra.ok) return ra
       return Ok(ra.index, r.value)
     })
@@ -101,9 +101,9 @@ export class Parser<Output, Input = string> {
 
   or<B>(b: Parser<B, Input>): Parser<Output | B, Input> {
     return new Parser<Output | B, Input>((input, index) => {
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (r.ok || r.index > index) return r
-      const rb = b.fun(input, index)
+      const rb = b.run(input, index)
       if (rb.ok || rb.index > index) return rb
       return Error(index, [r.expected, rb.expected])
     })
@@ -113,7 +113,7 @@ export class Parser<Output, Input = string> {
     return new Parser((input, index) => {
       const value = []
       for (;;) {
-        const r = this.fun(input, index)
+        const r = this.run(input, index)
         if (!r.ok) return r.index === index ? Ok(index, value) : r
         value.push(r.value)
         index = r.index
@@ -124,15 +124,15 @@ export class Parser<Output, Input = string> {
   join<B>(b: Parser<B, Input>): Parser<Output[], Input> {
     return new Parser((input, index) => {
       const value: Output[] = []
-      const r = this.fun(input, index)
+      const r = this.run(input, index)
       if (!r.ok) return r.index === index ? Ok(index, value) : r
       value.push(r.value)
       index = r.index
       for (;;) {
-        const rb = b.fun(input, index)
+        const rb = b.run(input, index)
         if (!rb.ok) return rb.index === index ? Ok(index, value) : rb
         index = rb.index
-        const r = this.fun(input, index)
+        const r = this.run(input, index)
         if (!r.ok) return r
         value.push(r.value)
         index = r.index
@@ -228,7 +228,7 @@ export const end = (): Parser<undefined, string> =>
 
 export const lazy = <Output, Input>(
   p: () => Parser<Output, Input>,
-): Parser<Output, Input> => new Parser((input, index) => p().fun(input, index))
+): Parser<Output, Input> => new Parser((input, index) => p().run(input, index))
 
 export const or = <Output, Input = string>(
   ps: Parser<Output, Input>[],
@@ -237,7 +237,7 @@ export const or = <Output, Input = string>(
   if (expected) {
     return new Parser((input, index) => {
       for (const p of ps) {
-        const r = p.fun(input, index)
+        const r = p.run(input, index)
         if (r.ok || r.index > index) return r
       }
       return Error(index, expected)
@@ -247,7 +247,7 @@ export const or = <Output, Input = string>(
   return new Parser((input, index) => {
     const expected = []
     for (const p of ps) {
-      const r = p.fun(input, index)
+      const r = p.run(input, index)
       if (r.ok || r.index > index) return r
       expected.push(r.expected)
     }
