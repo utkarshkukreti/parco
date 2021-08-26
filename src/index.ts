@@ -48,6 +48,14 @@ export class Parser<Output, Input = string> {
     })
   }
 
+  try(): Parser<Output, Input> {
+    return new Parser((input, index) => {
+      const r = this.run(input, index)
+      if (r.ok) return r
+      return Error(index, r.expected)
+    })
+  }
+
   bind<B>(b: (a: Output) => Parser<B, Input>): Parser<B, Input> {
     return new Parser((input, index) => {
       const r = this.run(input, index)

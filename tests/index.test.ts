@@ -477,6 +477,70 @@ test('Parser.optional()', () => {
   `)
 })
 
+test('Parser.try()', () => {
+  const ab = p.string('a').then(p.string('b'))
+  const ac = p.string('a').then(p.string('c'))
+  const abOrAc: p.Parser<['a', 'b'] | ['a', 'c']> = ab.try().or(ac)
+
+  expect(abOrAc.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "expected": Array [
+        "\\"a\\"",
+        "\\"a\\"",
+      ],
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(abOrAc.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"c\\"",
+      "index": 1,
+      "ok": false,
+    }
+  `)
+  expect(abOrAc.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+  expect(abOrAc.parse('ac')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "c",
+      ],
+    }
+  `)
+  expect(abOrAc.parse('abc')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "b",
+      ],
+    }
+  `)
+  expect(abOrAc.parse('acb')).toMatchInlineSnapshot(`
+    Object {
+      "index": 2,
+      "ok": true,
+      "value": Array [
+        "a",
+        "c",
+      ],
+    }
+  `)
+})
+
 test('Parser.bind()', () => {
   const dup = p.regex(/./).bind(string => p.string(string))
 
