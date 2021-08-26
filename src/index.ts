@@ -117,7 +117,20 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  repeat(): Parser<Output[], Input> {
+  repeat(count?: number): Parser<Output[], Input> {
+    if (count !== undefined) {
+      return new Parser((input, index) => {
+        const value = []
+        for (let i = 0; i < count; i++) {
+          const r = this.run(input, index)
+          if (!r.ok) return r
+          value.push(r.value)
+          index = r.index
+        }
+        return Ok(index, value)
+      })
+    }
+
     return new Parser((input, index) => {
       const value = []
       for (;;) {

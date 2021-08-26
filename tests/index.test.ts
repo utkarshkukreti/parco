@@ -904,6 +904,73 @@ test('Parser.repeat()', () => {
       "ok": false,
     }
   `)
+
+  const a3: p.Parser<'a'[]> = p.string('a').repeat(3)
+
+  expect(a3.parse('')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('a')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 1,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('b')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 0,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('aa')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 2,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('ab')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 1,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('aaa')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": Array [
+        "a",
+        "a",
+        "a",
+      ],
+    }
+  `)
+  expect(a3.parse('aab')).toMatchInlineSnapshot(`
+    Object {
+      "expected": "\\"a\\"",
+      "index": 2,
+      "ok": false,
+    }
+  `)
+  expect(a3.parse('aaab')).toMatchInlineSnapshot(`
+    Object {
+      "index": 3,
+      "ok": true,
+      "value": Array [
+        "a",
+        "a",
+        "a",
+      ],
+    }
+  `)
 })
 
 test('Parser.join()', () => {
