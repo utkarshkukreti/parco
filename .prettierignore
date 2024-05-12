@@ -1,5 +1,2 @@
 /benchmarks/json.sample.ts
-/coverage
-/dist
-/node_modules
 /pnpm-lock.yaml

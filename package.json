@@ -21,34 +21,34 @@
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "tsc && vite build && tsc -P tsconfig.dts.json",
-    "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "build": "tsc && tsup src/index.ts --format cjs,esm --dts --clean",
+    "test": "tsc && vitest",
     "prepare": "pnpm build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "bench:json": "node --no-warnings --loader ts-node/esm --experimental-specifier-resolution=node benchmarks/json.ts"
+    "bench:json": "vite-node benchmarks/json.ts"
   },
   "devDependencies": {
-    "@types/benchmark": "^2.1.1",
-    "@types/jest": "^27.0.1",
-    "benchmark": "^2.1.4",
-    "jest": "^27.0.6",
-    "json-test-suite": "^0.1.0",
-    "prettier": "^2.3.2",
-    "prettier-plugin-sorted": "^2.0.0",
-    "ts-jest": "^27.0.5",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.3.5",
-    "vite": "^2.5.0"
-  },
-  "resolutions": {
-    "**/import-sort-parser-typescript/typescript": "*"
+    "@types/node": "20.12.11",
+    "json-test-suite": "0.1.0",
+    "prettier": "3.2.5",
+    "tinybench": "2.8.0",
+    "tsup": "8.0.2",
+    "typescript": "5.4.5",
+    "vite-node": "1.6.0",
+    "vitest": "1.6.0"
   }
 }
