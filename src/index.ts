@@ -14,14 +14,14 @@ export type Error = {
 
 export type Expected = string | Expected[]
 
-export class Parser<Output, Input = string> {
+export class Parser<Input, Output> {
   constructor(readonly run: (input: Input, index: number) => Result<Output>) {}
 
   parse(input: Input, index = 0): Result<Output> {
     return this.run(input, index)
   }
 
-  map<B>(fun: (a: Output) => B): Parser<B, Input> {
+  map<B>(fun: (a: Output) => B): Parser<Input, B> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok) return r
@@ -32,7 +32,7 @@ export class Parser<Output, Input = string> {
   filter(
     fun: (a: Output) => boolean,
     expected: Expected,
-  ): Parser<Output, Input> {
+  ): Parser<Input, Output> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok || fun(r.value)) return r
@@ -40,15 +40,15 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  optional<B>(default_: B): Parser<Output | B, Input> {
-    return new Parser<Output | B, Input>((input, index) => {
+  optional<B>(default_: B): Parser<Input, Output | B> {
+    return new Parser<Input, Output | B>((input, index) => {
       const r = this.run(input, index)
       if (r.ok || r.index > index) return r
       return Ok(index, default_)
     })
   }
 
-  try(): Parser<Output, Input> {
+  try(): Parser<Input, Output> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (r.ok) return r
@@ -56,7 +56,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  bind<B>(b: (a: Output) => Parser<B, Input>): Parser<B, Input> {
+  bind<B>(b: (a: Output) => Parser<Input, B>): Parser<Input, B> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok) return r
@@ -64,7 +64,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  then<B>(b: Parser<B, Input>): Parser<[Output, B], Input> {
+  then<B>(b: Parser<Input, B>): Parser<Input, [Output, B]> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok) return r
@@ -74,7 +74,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  thenSkip<B>(b: Parser<B, Input>): Parser<Output, Input> {
+  thenSkip<B>(b: Parser<Input, B>): Parser<Input, Output> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok) return r
@@ -84,7 +84,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  skipThen<B>(b: Parser<B, Input>): Parser<B, Input> {
+  skipThen<B>(b: Parser<Input, B>): Parser<Input, B> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok) return r
@@ -93,9 +93,9 @@ export class Parser<Output, Input = string> {
   }
 
   between<Before, After>(
-    before: Parser<Before, Input>,
-    after: Parser<After, Input>,
-  ): Parser<Output, Input> {
+    before: Parser<Input, Before>,
+    after: Parser<Input, After>,
+  ): Parser<Input, Output> {
     return new Parser((input, index) => {
       const rb = before.run(input, index)
       if (!rb.ok) return rb
@@ -107,8 +107,8 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  or<B>(b: Parser<B, Input>): Parser<Output | B, Input> {
-    return new Parser<Output | B, Input>((input, index) => {
+  or<B>(b: Parser<Input, B>): Parser<Input, Output | B> {
+    return new Parser<Input, Output | B>((input, index) => {
       const r = this.run(input, index)
       if (r.ok || r.index > index) return r
       const rb = b.run(input, index)
@@ -117,7 +117,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  repeat(count?: number): Parser<Output[], Input> {
+  repeat(count?: number): Parser<Input, Output[]> {
     if (count !== undefined) {
       return new Parser((input, index) => {
         const value = []
@@ -142,7 +142,7 @@ export class Parser<Output, Input = string> {
     })
   }
 
-  join<B>(b: Parser<B, Input>): Parser<Output[], Input> {
+  join<B>(b: Parser<Input, B>): Parser<Input, Output[]> {
     return new Parser((input, index) => {
       const value: Output[] = []
       const r = this.run(input, index)
@@ -162,16 +162,16 @@ export class Parser<Output, Input = string> {
   }
 
   chainLeft(
-    op: Parser<(left: Output, right: Output) => Output, Input>,
-  ): Parser<Output, Input> {
+    op: Parser<Input, (left: Output, right: Output) => Output>,
+  ): Parser<Input, Output> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       tail.reduce((acc, [op, right]) => op(acc, right), head),
     )
   }
 
   chainRight(
-    op: Parser<(left: Output, right: Output) => Output, Input>,
-  ): Parser<Output, Input> {
+    op: Parser<Input, (left: Output, right: Output) => Output>,
+  ): Parser<Input, Output> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       [head]
         .concat(tail.map(t => t[1]))
@@ -186,7 +186,7 @@ export class Parser<Output, Input = string> {
 
 export const string = <Output extends string>(
   arg: Output | Output[],
-): Parser<Output> => {
+): Parser<string, Output> => {
   if (Array.isArray(arg)) {
     const expected = arg.map(a => JSON.stringify(a))
     const re = arg
@@ -195,7 +195,7 @@ export const string = <Output extends string>(
       .map(escapeRegex)
       .join('|')
     // This `as` is sound as long as our regex construction above is correct!
-    return regex(re, { expected }) as Parser<Output>
+    return regex(re, { expected }) as Parser<string, Output>
   }
   const expected = JSON.stringify(arg)
   return new Parser((input, index) => {
@@ -220,7 +220,7 @@ const _regex = (
 export const regex = (
   arg: RegExp | string,
   { expected: expected_ }: { expected?: Expected } = {},
-): Parser<string> => {
+): Parser<string, string> => {
   const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
@@ -233,7 +233,7 @@ export const regex = (
 export const regex_ = (
   arg: RegExp | string,
   { expected: expected_ }: { expected?: Expected } = {},
-): Parser<undefined> => {
+): Parser<string, undefined> => {
   const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
@@ -242,19 +242,19 @@ export const regex_ = (
   })
 }
 
-export const end = (): Parser<undefined, string> =>
+export const end = (): Parser<string, void> =>
   new Parser((input, index) =>
     index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
   )
 
-export const lazy = <Output, Input>(
-  p: () => Parser<Output, Input>,
-): Parser<Output, Input> => new Parser((input, index) => p().run(input, index))
+export const lazy = <Input, Output>(
+  p: () => Parser<Input, Output>,
+): Parser<Input, Output> => new Parser((input, index) => p().run(input, index))
 
-export const or = <Output, Input = string>(
-  ps: Parser<Output, Input>[],
+export const or = <Input, Output>(
+  ps: Parser<Input, Output>[],
   { expected }: { expected?: Expected } = {},
-): Parser<Output, Input> => {
+): Parser<Input, Output> => {
   if (expected) {
     return new Parser((input, index) => {
       for (const p of ps) {
@@ -276,12 +276,12 @@ export const or = <Output, Input = string>(
   })
 }
 
-export const succeed = <Output, Input>(value: Output): Parser<Output, Input> =>
+export const succeed = <Input, Output>(value: Output): Parser<Input, Output> =>
   new Parser((_, index) => Ok(index, value))
 
-export const fail = <Output, Input>(
+export const fail = <Input, Output>(
   expected: Expected,
-): Parser<Output, Input> => new Parser((_, index) => Error(index, expected))
+): Parser<Input, Output> => new Parser((_, index) => Error(index, expected))
 
 export const Ok = <Output>(index: number, value: Output): Ok<Output> => ({
   ok: true,

@@ -21,7 +21,7 @@ const Object = String.thenSkip(ch(':'))
   .join(ch(','))
   .between(ch('{'), ch('}'))
 
-const Value: p.Parser<Value> = p.or<Value>(
+const Value: p.Parser<string, Value> = p.or<string, Value>(
   [String, Number, Object, Array, Keyword],
   { expected: ['a string', 'a number', 'an object', 'an array', 'a keyword'] },
 )

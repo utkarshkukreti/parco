@@ -37,7 +37,7 @@ test('string', () => {
     }
   `)
 
-  const keyword: p.Parser<'foo' | 'bar' | 'foobar'> = p.string([
+  const keyword: p.Parser<string, 'foo' | 'bar' | 'foobar'> = p.string([
     'foo',
     'bar',
     'foobar',
@@ -95,7 +95,7 @@ test('string', () => {
     }
   `)
 
-  const plus: p.Parser<'+' | '+++'> = p.string(['+', '+++'])
+  const plus: p.Parser<string, '+' | '+++'> = p.string(['+', '+++'])
 
   expect(plus.parse('*')).toMatchInlineSnapshot(`
     {
@@ -215,7 +215,7 @@ test('regex', () => {
 })
 
 test('regex_', () => {
-  const int: p.Parser<undefined> = p.regex_(/\d+/)
+  const int: p.Parser<string, void> = p.regex_(/\d+/)
 
   expect(int.parse('')).toMatchInlineSnapshot(`
     {
@@ -260,7 +260,7 @@ test('regex_', () => {
     }
   `)
 
-  const foo: p.Parser<undefined> = p.regex_(/foo/giy)
+  const foo: p.Parser<string, void> = p.regex_(/foo/giy)
   expect(foo.parse('FO o')).toMatchInlineSnapshot(`
     {
       "expected": "/foo/i",
@@ -393,7 +393,7 @@ test('Parser.filter()', () => {
 })
 
 test('Parser.optional()', () => {
-  const ab: p.Parser<['a', 'b'] | null> = p
+  const ab: p.Parser<string, ['a', 'b'] | null> = p
     .string('a')
     .then(p.string('b'))
     .optional(null)
@@ -433,7 +433,7 @@ test('Parser.optional()', () => {
     }
   `)
 
-  const ab2: p.Parser<['a', 'b'] | '!'> = p
+  const ab2: p.Parser<string, ['a', 'b'] | '!'> = p
     .string('a')
     .then(p.string('b'))
     .optional('!')
@@ -481,7 +481,7 @@ test('Parser.optional()', () => {
 test('Parser.try()', () => {
   const ab = p.string('a').then(p.string('b'))
   const ac = p.string('a').then(p.string('c'))
-  const abOrAc: p.Parser<['a', 'b'] | ['a', 'c']> = ab.try().or(ac)
+  const abOrAc: p.Parser<string, ['a', 'b'] | ['a', 'c']> = ab.try().or(ac)
 
   expect(abOrAc.parse('')).toMatchInlineSnapshot(`
     {
@@ -641,9 +641,9 @@ test('Parser.then()', () => {
 })
 
 test('Parser.thenSkip() / Parser.skipThen()', () => {
-  const a: p.Parser<'a'> = p.string('a').thenSkip(p.string('b'))
-  const b: p.Parser<'b'> = p.string('a').skipThen(p.string('b'))
-  const ab: p.Parser<['a', 'b']> = p
+  const a: p.Parser<string, 'a'> = p.string('a').thenSkip(p.string('b'))
+  const b: p.Parser<string, 'b'> = p.string('a').skipThen(p.string('b'))
+  const ab: p.Parser<string, ['a', 'b']> = p
     .string('z')
     .skipThen(p.string('a'))
     .thenSkip(p.string('z'))
@@ -830,12 +830,15 @@ test('Parser.or()', () => {
     }
   `)
 
-  const ab: p.Parser<'a' | 'b'> = p.string('a').or(p.string('b'))
+  const ab: p.Parser<string, 'a' | 'b'> = p.string('a').or(p.string('b'))
   ignore(ab)
 })
 
 test('Parser.repeat()', () => {
-  const abs: p.Parser<['a', 'b'][]> = p.string('a').then(p.string('b')).repeat()
+  const abs: p.Parser<string, ['a', 'b'][]> = p
+    .string('a')
+    .then(p.string('b'))
+    .repeat()
 
   expect(abs.parse('')).toMatchInlineSnapshot(`
     {
@@ -906,7 +909,7 @@ test('Parser.repeat()', () => {
     }
   `)
 
-  const a3: p.Parser<'a'[]> = p.string('a').repeat(3)
+  const a3: p.Parser<string, 'a'[]> = p.string('a').repeat(3)
 
   expect(a3.parse('')).toMatchInlineSnapshot(`
     {
@@ -975,7 +978,7 @@ test('Parser.repeat()', () => {
 })
 
 test('Parser.join()', () => {
-  const as: p.Parser<'a'[]> = p
+  const as: p.Parser<string, 'a'[]> = p
     .string('a')
     .join(p.string(';').then(p.string(';')))
 
@@ -1078,7 +1081,7 @@ test('Parser.chainLeft() / Parser.chainRight()', () => {
   const op = (op: string) =>
     p.string(op).map(() => (l: string, r: string) => `(${op} ${l} ${r})`)
 
-  const expr: p.Parser<string> = Integer.chainRight(
+  const expr: p.Parser<string, string> = Integer.chainRight(
     p.or([op('**'), op('^^'), op('||')]),
   ).chainLeft(p.or([op('+'), op('-')]))
 
@@ -1115,7 +1118,9 @@ test('Parser.chainLeft() / Parser.chainRight()', () => {
 })
 
 test('Parser.pipe()', () => {
-  const bar: p.Parser<'bar'> = p.string('foo').pipe(foo => foo.map(() => 'bar'))
+  const bar: p.Parser<string, 'bar'> = p
+    .string('foo')
+    .pipe(foo => foo.map(() => 'bar'))
   ignore(bar)
 })
 
@@ -1161,7 +1166,7 @@ test('lazy', () => {
 
 test('or', () => {
   type T = 'a' | ['b', 'c'] | 'd'
-  const abcd: p.Parser<T> = p.or<T>([
+  const abcd: p.Parser<string, T> = p.or<string, T>([
     p.string('a'),
     p.string('b').then(p.string('c')),
     p.string('d'),
@@ -1230,7 +1235,7 @@ test('or', () => {
 })
 
 test('succeed', () => {
-  const foo: p.Parser<'foo'> = p.succeed('foo')
+  const foo: p.Parser<string, 'foo'> = p.succeed('foo')
   // @ts-expect-error
   const bar: p.Parser<'foo'> = p.succeed('bar')
   ignore(bar)
@@ -1245,7 +1250,7 @@ test('succeed', () => {
 })
 
 test('fail', () => {
-  const foo: p.Parser<'foo'> = p.string('foo').thenSkip(p.fail('!!!'))
+  const foo: p.Parser<string, 'foo'> = p.string('foo').thenSkip(p.fail('!!!'))
 
   expect(foo.parse('foo')).toMatchInlineSnapshot(`
     {
