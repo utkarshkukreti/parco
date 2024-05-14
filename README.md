@@ -4,9 +4,9 @@
 
 A hyper-optimized 1kb library to build fully type-safe parsers in TypeScript.
 
-![Version](https://img.shields.io/npm/v/parco?style=for-the-badge)
-![Downloads](https://img.shields.io/npm/dt/parco?style=for-the-badge)
-![License](https://img.shields.io/npm/l/parco?style=for-the-badge)
+[![Version](https://img.shields.io/npm/v/parco?style=for-the-badge)](https://www.npmjs.com/package/parco)
+[![Downloads](https://img.shields.io/npm/dt/parco?style=for-the-badge)](https://www.npmjs.com/package/parco)
+[![License](https://img.shields.io/npm/l/parco?style=for-the-badge)](https://www.npmjs.com/package/parco)
 
 </div>
 
