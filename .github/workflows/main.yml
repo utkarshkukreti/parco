@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   main:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }} - Node ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
