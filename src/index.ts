@@ -21,6 +21,15 @@ export class Parser<Input, Output> {
     return this.run(input, index)
   }
 
+  parseOrThrow(input: Input, index = 0): Output {
+    const r = this.run(input, index)
+    if (!r.ok)
+      throw new globalThis.Error(
+        `expected ${JSON.stringify(r.expected)} at index ${r.index}`,
+      )
+    return r.value
+  }
+
   map<B>(fun: (a: Output) => B): Parser<Input, B> {
     return new Parser((input, index) => {
       const r = this.run(input, index)

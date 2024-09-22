@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { test, expect, describe } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 import Arithmetic from '../examples/arithmetic'
 import Json from '../examples/json'
@@ -326,6 +326,24 @@ test('end', () => {
       "ok": false,
     }
   `)
+})
+
+test('Parser.parseOrThrow()', () => {
+  const int = p.regex(/\d+/).map(parseInt)
+
+  expect(int.parseOrThrow('1')).toMatchInlineSnapshot(`1`)
+
+  {
+    let error: unknown
+    try {
+      int.parseOrThrow('a')
+    } catch (_) {
+      error = _
+    }
+    expect(error).toMatchInlineSnapshot(
+      `[Error: expected "/\\\\d+/" at index 0]`,
+    )
+  }
 })
 
 test('Parser.map()', () => {
@@ -1469,7 +1487,9 @@ describe('examples', () => {
 
     expect(go('()')).toMatchInlineSnapshot(`"()"`)
     expect(go('(1 2 3)')).toMatchInlineSnapshot(`"(1 2 3)"`)
-    expect(go('(+ 1 (- 2 (* 3 (/ 4 5))))')).toMatchInlineSnapshot(`"(+ 1 (- 2 (* 3 (/ 4 5))))"`)
+    expect(go('(+ 1 (- 2 (* 3 (/ 4 5))))')).toMatchInlineSnapshot(
+      `"(+ 1 (- 2 (* 3 (/ 4 5))))"`,
+    )
   })
 })
 
