@@ -41,6 +41,7 @@
     "format:check": "prettier --check .",
     "bench:json": "vite-node benchmarks/json.ts"
   },
+  "packageManager": "pnpm@9.11.0",
   "devDependencies": {
     "@types/node": "20.12.11",
     "json-test-suite": "0.1.0",
