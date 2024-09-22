@@ -38,7 +38,7 @@
     "test": "tsc && vitest",
     "prepare": "pnpm build",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "prettier --check .",
     "bench:json": "vite-node benchmarks/json.ts"
   },
   "packageManager": "pnpm@9.11.0",
