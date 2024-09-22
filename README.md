@@ -11,6 +11,6 @@ A hyper-optimized 1kb library to build fully type-safe parsers in TypeScript.
 
 </div>
 
-Examples: [Arithmetic](./examples/arithmetic.ts) | [JSON](./examples/json.ts)
+Examples: [Arithmetic](./examples/arithmetic.ts) | [JSON](./examples/json.ts) | [LISP](./examples/lisp.ts)
 
 Also: [Tests](./tests/index.test.ts)
