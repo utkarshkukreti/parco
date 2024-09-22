@@ -3,6 +3,7 @@ import { test, expect, describe } from 'vitest'
 
 import Arithmetic from '../examples/arithmetic'
 import Json from '../examples/json'
+import * as Lisp from '../examples/lisp'
 import * as p from '../src'
 
 test('string', () => {
@@ -1456,6 +1457,19 @@ describe('examples', () => {
         "ok": false,
       }
     `)
+  })
+
+  test('lisp', () => {
+    const go = (string: string) => {
+      const parsed = Lisp.parse(string)
+      if (!parsed.ok)
+        throw new Error(`failed to parse ${JSON.stringify(string)}`)
+      return Lisp.toString(parsed.value)
+    }
+
+    expect(go('()')).toMatchInlineSnapshot(`"()"`)
+    expect(go('(1 2 3)')).toMatchInlineSnapshot(`"(1 2 3)"`)
+    expect(go('(+ 1 (- 2 (* 3 (/ 4 5))))')).toMatchInlineSnapshot(`"(+ 1 (- 2 (* 3 (/ 4 5))))"`)
   })
 })
 
