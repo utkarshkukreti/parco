@@ -11,8 +11,6 @@ for (const input of inputs) {
   bench.add(`${input.length} bytes`, () => Json(input))
 }
 
-await bench.warmup()
-
 await bench.run()
 
 console.table(bench.table())

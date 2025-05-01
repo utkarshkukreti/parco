@@ -41,15 +41,15 @@
     "lint": "prettier --check .",
     "bench:json": "vite-node benchmarks/json.ts"
   },
-  "packageManager": "pnpm@9.11.0",
+  "packageManager": "pnpm@10.10.0",
   "devDependencies": {
-    "@types/node": "22.5.5",
+    "@types/node": "22.15.3",
     "json-test-suite": "0.1.0",
-    "prettier": "3.3.3",
-    "tinybench": "2.9.0",
-    "tsup": "8.3.0",
-    "typescript": "5.6.2",
-    "vite-node": "2.1.1",
-    "vitest": "2.1.1"
+    "prettier": "3.5.3",
+    "tinybench": "4.0.1",
+    "tsup": "8.4.0",
+    "typescript": "5.8.3",
+    "vite-node": "3.1.2",
+    "vitest": "3.1.2"
   }
 }
