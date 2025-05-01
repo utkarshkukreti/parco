@@ -26,11 +26,7 @@ const List = p
   .map(value => ({ type: 'list' as const, value }))
   .pipe(ws)
 
-const Value: p.Parser<string, Value> = p.or<string, Value>([
-  Atom,
-  Integer,
-  List,
-])
+const Value: p.Parser<string, Value> = p.or<string, Value>([Atom, Integer, List])
 
 export const toString = (value: Value): string => {
   if (value.type === 'atom') return value.value

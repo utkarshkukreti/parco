@@ -38,11 +38,7 @@ test('string', () => {
     }
   `)
 
-  const keyword: p.Parser<string, 'foo' | 'bar' | 'foobar'> = p.string([
-    'foo',
-    'bar',
-    'foobar',
-  ])
+  const keyword: p.Parser<string, 'foo' | 'bar' | 'foobar'> = p.string(['foo', 'bar', 'foobar'])
 
   expect(keyword.parse('f')).toMatchInlineSnapshot(`
     {
@@ -340,9 +336,7 @@ test('Parser.parseOrThrow()', () => {
     } catch (_) {
       error = _
     }
-    expect(error).toMatchInlineSnapshot(
-      `[Error: expected "/\\\\d+/" at index 0]`,
-    )
+    expect(error).toMatchInlineSnapshot(`[Error: expected "/\\\\d+/" at index 0]`)
   }
 })
 
@@ -412,10 +406,7 @@ test('Parser.filter()', () => {
 })
 
 test('Parser.optional()', () => {
-  const ab: p.Parser<string, ['a', 'b'] | null> = p
-    .string('a')
-    .then(p.string('b'))
-    .optional(null)
+  const ab: p.Parser<string, ['a', 'b'] | null> = p.string('a').then(p.string('b')).optional(null)
 
   expect(ab.parse('')).toMatchInlineSnapshot(`
     {
@@ -452,10 +443,7 @@ test('Parser.optional()', () => {
     }
   `)
 
-  const ab2: p.Parser<string, ['a', 'b'] | '!'> = p
-    .string('a')
-    .then(p.string('b'))
-    .optional('!')
+  const ab2: p.Parser<string, ['a', 'b'] | '!'> = p.string('a').then(p.string('b')).optional('!')
 
   // @ts-expect-error
   const ab3: p.Parser<['a', 'b']> = p.string('a').then(p.string('b')).optional()
@@ -854,10 +842,7 @@ test('Parser.or()', () => {
 })
 
 test('Parser.repeat()', () => {
-  const abs: p.Parser<string, ['a', 'b'][]> = p
-    .string('a')
-    .then(p.string('b'))
-    .repeat()
+  const abs: p.Parser<string, ['a', 'b'][]> = p.string('a').then(p.string('b')).repeat()
 
   expect(abs.parse('')).toMatchInlineSnapshot(`
     {
@@ -997,9 +982,7 @@ test('Parser.repeat()', () => {
 })
 
 test('Parser.join()', () => {
-  const as: p.Parser<string, 'a'[]> = p
-    .string('a')
-    .join(p.string(';').then(p.string(';')))
+  const as: p.Parser<string, 'a'[]> = p.string('a').join(p.string(';').then(p.string(';')))
 
   expect(as.parse('')).toMatchInlineSnapshot(`
     {
@@ -1097,8 +1080,7 @@ test('Parser.join()', () => {
 test('Parser.chainLeft() / Parser.chainRight()', () => {
   const Integer = p.regex(/\d+/, { expected: 'an integer' })
 
-  const op = (op: string) =>
-    p.string(op).map(() => (l: string, r: string) => `(${op} ${l} ${r})`)
+  const op = (op: string) => p.string(op).map(() => (l: string, r: string) => `(${op} ${l} ${r})`)
 
   const expr: p.Parser<string, string> = Integer.chainRight(
     p.or([op('**'), op('^^'), op('||')]),
@@ -1128,18 +1110,12 @@ test('Parser.chainLeft() / Parser.chainRight()', () => {
   expect(parse('1**2**3**4+5**6+7')).toMatchInlineSnapshot(
     `"(+ (+ (** 1 (** 2 (** 3 4))) (** 5 6)) 7)"`,
   )
-  expect(parse('1**2**3**4**5')).toMatchInlineSnapshot(
-    `"(** 1 (** 2 (** 3 (** 4 5))))"`,
-  )
-  expect(parse('1**2^^3^^4||5')).toMatchInlineSnapshot(
-    `"(** 1 (^^ 2 (^^ 3 (|| 4 5))))"`,
-  )
+  expect(parse('1**2**3**4**5')).toMatchInlineSnapshot(`"(** 1 (** 2 (** 3 (** 4 5))))"`)
+  expect(parse('1**2^^3^^4||5')).toMatchInlineSnapshot(`"(** 1 (^^ 2 (^^ 3 (|| 4 5))))"`)
 })
 
 test('Parser.pipe()', () => {
-  const bar: p.Parser<string, 'bar'> = p
-    .string('foo')
-    .pipe(foo => foo.map(() => 'bar'))
+  const bar: p.Parser<string, 'bar'> = p.string('foo').pipe(foo => foo.map(() => 'bar'))
   ignore(bar)
 })
 
@@ -1398,29 +1374,19 @@ describe('examples', () => {
     expect(Arithmetic('2*3')).toMatchInlineSnapshot(`6`)
     expect(Arithmetic('4+5*6')).toMatchInlineSnapshot(`34`)
     expect(Arithmetic('7*8+9')).toMatchInlineSnapshot(`65`)
-    expect(Arithmetic('((10)+(9*8-7*6)*(5))-4-3-(2-1)')).toMatchInlineSnapshot(
-      `152`,
-    )
-    expect(Arithmetic('1+2*3/4-5-6/7*8/9')).toMatchInlineSnapshot(
-      `-3.261904761904762`,
-    )
-    expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(
-      `9990889199.019802`,
-    )
+    expect(Arithmetic('((10)+(9*8-7*6)*(5))-4-3-(2-1)')).toMatchInlineSnapshot(`152`)
+    expect(Arithmetic('1+2*3/4-5-6/7*8/9')).toMatchInlineSnapshot(`-3.261904761904762`)
+    expect(Arithmetic('999*999999*99999/9999')).toMatchInlineSnapshot(`9990889199.019802`)
     expect(Arithmetic('2**3')).toMatchInlineSnapshot(`8`)
     expect(Arithmetic('2+3**4')).toMatchInlineSnapshot(`83`)
     expect(Arithmetic('2+3**2**5')).toMatchInlineSnapshot(`1853020188851843`)
     expect(Arithmetic('2+3**4+5**6')).toMatchInlineSnapshot(`15708`)
-    expect(Arithmetic('2+3**4+5**6**2')).toMatchInlineSnapshot(
-      `1.455191522836685e+25`,
-    )
+    expect(Arithmetic('2+3**4+5**6**2')).toMatchInlineSnapshot(`1.455191522836685e+25`)
     expect(Arithmetic('-1')).toMatchInlineSnapshot(`-1`)
     expect(Arithmetic('--2')).toMatchInlineSnapshot(`2`)
     expect(Arithmetic('---3')).toMatchInlineSnapshot(`-3`)
     expect(Arithmetic('-4----5')).toMatchInlineSnapshot(`1`)
-    expect(Arithmetic('6*-7/-8+9**-2')).toMatchInlineSnapshot(
-      `5.262345679012346`,
-    )
+    expect(Arithmetic('6*-7/-8+9**-2')).toMatchInlineSnapshot(`5.262345679012346`)
     expect(Arithmetic('-3')).toMatchInlineSnapshot(`-3`)
     expect(Arithmetic('~3')).toMatchInlineSnapshot(`-4`)
     expect(Arithmetic('~-3')).toMatchInlineSnapshot(`2`)
@@ -1480,16 +1446,13 @@ describe('examples', () => {
   test('lisp', () => {
     const go = (string: string) => {
       const parsed = Lisp.parse(string)
-      if (!parsed.ok)
-        throw new Error(`failed to parse ${JSON.stringify(string)}`)
+      if (!parsed.ok) throw new Error(`failed to parse ${JSON.stringify(string)}`)
       return Lisp.toString(parsed.value)
     }
 
     expect(go('()')).toMatchInlineSnapshot(`"()"`)
     expect(go('(1 2 3)')).toMatchInlineSnapshot(`"(1 2 3)"`)
-    expect(go('(+ 1 (- 2 (* 3 (/ 4 5))))')).toMatchInlineSnapshot(
-      `"(+ 1 (- 2 (* 3 (/ 4 5))))"`,
-    )
+    expect(go('(+ 1 (- 2 (* 3 (/ 4 5))))')).toMatchInlineSnapshot(`"(+ 1 (- 2 (* 3 (/ 4 5))))"`)
   })
 })
 

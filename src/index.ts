@@ -24,9 +24,7 @@ export class Parser<Input, Output> {
   parseOrThrow(input: Input, index = 0): Output {
     const r = this.run(input, index)
     if (!r.ok)
-      throw new globalThis.Error(
-        `expected ${JSON.stringify(r.expected)} at index ${r.index}`,
-      )
+      throw new globalThis.Error(`expected ${JSON.stringify(r.expected)} at index ${r.index}`)
     return r.value
   }
 
@@ -38,10 +36,7 @@ export class Parser<Input, Output> {
     })
   }
 
-  filter(
-    fun: (a: Output) => boolean,
-    expected: Expected,
-  ): Parser<Input, Output> {
+  filter(fun: (a: Output) => boolean, expected: Expected): Parser<Input, Output> {
     return new Parser((input, index) => {
       const r = this.run(input, index)
       if (!r.ok || fun(r.value)) return r
@@ -170,21 +165,15 @@ export class Parser<Input, Output> {
     })
   }
 
-  chainLeft(
-    op: Parser<Input, (left: Output, right: Output) => Output>,
-  ): Parser<Input, Output> {
+  chainLeft(op: Parser<Input, (left: Output, right: Output) => Output>): Parser<Input, Output> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
       tail.reduce((acc, [op, right]) => op(acc, right), head),
     )
   }
 
-  chainRight(
-    op: Parser<Input, (left: Output, right: Output) => Output>,
-  ): Parser<Input, Output> {
+  chainRight(op: Parser<Input, (left: Output, right: Output) => Output>): Parser<Input, Output> {
     return this.then(op.then(this).repeat()).map(([head, tail]) =>
-      [head]
-        .concat(tail.map(t => t[1]))
-        .reduceRight((acc, left, i) => tail[i]![0](left, acc)),
+      [head].concat(tail.map(t => t[1])).reduceRight((acc, left, i) => tail[i]![0](left, acc)),
     )
   }
 
@@ -193,9 +182,7 @@ export class Parser<Input, Output> {
   }
 }
 
-export const string = <Output extends string>(
-  arg: Output | Output[],
-): Parser<string, Output> => {
+export const string = <Output extends string>(arg: Output | Output[]): Parser<string, Output> => {
   if (Array.isArray(arg)) {
     const expected = arg.map(a => JSON.stringify(a))
     const re = arg
@@ -213,14 +200,9 @@ export const string = <Output extends string>(
   })
 }
 
-const _regex = (
-  arg: RegExp | string,
-  expected_: Expected | undefined,
-): [RegExp, Expected] => {
+const _regex = (arg: RegExp | string, expected_: Expected | undefined): [RegExp, Expected] => {
   const [source, flags] =
-    typeof arg === 'string'
-      ? [arg, '']
-      : [arg.source, arg.flags.replace(/y|g/g, '')]
+    typeof arg === 'string' ? [arg, ''] : [arg.source, arg.flags.replace(/y|g/g, '')]
   const expected = expected_ || `/${source}/${flags}`
   const regex = new RegExp(source, flags + 'y')
   return [regex, expected]
@@ -233,8 +215,7 @@ export const regex = (
   const [regex, expected] = _regex(arg, expected_)
   return new Parser((input, index) => {
     regex.lastIndex = index
-    if (regex.test(input))
-      return Ok(regex.lastIndex, input.slice(index, regex.lastIndex))
+    if (regex.test(input)) return Ok(regex.lastIndex, input.slice(index, regex.lastIndex))
     return Error(index, expected)
   })
 }
@@ -256,9 +237,8 @@ export const end = (): Parser<string, void> =>
     index >= input.length ? Ok(index, undefined) : Error(index, 'end of input'),
   )
 
-export const lazy = <Input, Output>(
-  p: () => Parser<Input, Output>,
-): Parser<Input, Output> => new Parser((input, index) => p().run(input, index))
+export const lazy = <Input, Output>(p: () => Parser<Input, Output>): Parser<Input, Output> =>
+  new Parser((input, index) => p().run(input, index))
 
 export const or = <Input, Output>(
   ps: Parser<Input, Output>[],
@@ -288,9 +268,8 @@ export const or = <Input, Output>(
 export const succeed = <Input, Output>(value: Output): Parser<Input, Output> =>
   new Parser((_, index) => Ok(index, value))
 
-export const fail = <Input, Output>(
-  expected: Expected,
-): Parser<Input, Output> => new Parser((_, index) => Error(index, expected))
+export const fail = <Input, Output>(expected: Expected): Parser<Input, Output> =>
+  new Parser((_, index) => Error(index, expected))
 
 export const Ok = <Output>(index: number, value: Output): Ok<Output> => ({
   ok: true,
@@ -304,5 +283,4 @@ export const Error = (index: number, expected: Expected): Error => ({
   expected,
 })
 
-const escapeRegex = (string: string) =>
-  string.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+const escapeRegex = (string: string) => string.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
