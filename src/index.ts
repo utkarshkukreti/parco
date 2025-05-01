@@ -21,6 +21,11 @@ export class Parser<Input, Output> {
     return this.run(input, index)
   }
 
+  parseOr<Output2>(input: Input, or: Output2): Output | Output2 {
+    const r = this.run(input, 0)
+    return r.ok ? r.value : or
+  }
+
   parseOrThrow(input: Input, index = 0): Output {
     const r = this.run(input, index)
     if (!r.ok)

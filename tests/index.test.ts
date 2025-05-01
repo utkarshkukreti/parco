@@ -324,6 +324,23 @@ test('end', () => {
   `)
 })
 
+test('Parser.parseOr()', () => {
+  const oneOrTwo = p.string(['1', '2'])
+
+  const a: '1' | '2' | '3' = oneOrTwo.parseOr('', '3')
+  ignore(a)
+  const b: '1' | '2' | null = oneOrTwo.parseOr('', null)
+  ignore(b)
+
+  // @ts-expect-error
+  const c: '1' | '2' | '4' = oneOrTwo.parseOr('', '3')
+  ignore(c)
+
+  expect(oneOrTwo.parseOr('1', null)).toMatchInlineSnapshot(`"1"`)
+  expect(oneOrTwo.parseOr('2', null)).toMatchInlineSnapshot(`"2"`)
+  expect(oneOrTwo.parseOr('3', null)).toMatchInlineSnapshot(`null`)
+})
+
 test('Parser.parseOrThrow()', () => {
   const int = p.regex(/\d+/).map(parseInt)
 
