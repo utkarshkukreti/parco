@@ -15,5 +15,4 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - run: pnpm lint
-        if: matrix.os == 'ubuntu-latest'
       - run: pnpm bench:json
