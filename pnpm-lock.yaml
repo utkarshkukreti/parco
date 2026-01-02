@@ -12,8 +12,8 @@ importers:
         specifier: 24.10.4
         version: 24.10.4
       json-test-suite:
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 1.0.0
+        version: 1.0.0
       prettier:
         specifier: 3.7.4
         version: 3.7.4
@@ -444,8 +444,8 @@ packages:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
 
-  json-test-suite@0.1.0:
-    resolution: {integrity: sha512-2bCOLCMiRUBsD5OkK4IaiiYkXGfDVfy1Pwl1ma+X0LCsCk8SE6GTj6gl413bSFjZb5YeOHWSjVe77ueY1UNgqg==}
+  json-test-suite@1.0.0:
+    resolution: {integrity: sha512-NNGEsqtbHqQcocE+kIb2NzmqU3BWN3bpI39DBME0GrjIRPxme/LCSH+7fIHDhJGDIArStvS5cEp3AJVUbU8iZQ==}
 
   lilconfig@3.1.3:
     resolution: {integrity: sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==}
@@ -1011,7 +1011,7 @@ snapshots:
 
   joycon@3.1.1: {}
 
-  json-test-suite@0.1.0: {}
+  json-test-suite@1.0.0: {}
 
   lilconfig@3.1.3: {}
 

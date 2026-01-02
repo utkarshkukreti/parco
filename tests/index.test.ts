@@ -1,4 +1,4 @@
-import * as fs from 'fs'
+import * as JsonTestSuite from 'json-test-suite'
 import { describe, expect, test } from 'vitest'
 
 import Arithmetic from '../examples/arithmetic'
@@ -1347,16 +1347,8 @@ describe('examples', () => {
   })
 
   test('json: json-test-suite', () => {
-    const read = (startsWith: string) => {
-      const path = 'node_modules/json-test-suite/test_parsing'
-      return fs
-        .readdirSync(path)
-        .filter(file => file.startsWith(startsWith))
-        .map(file => fs.readFileSync(path + '/' + file, 'utf-8'))
-    }
-
-    const ys = read('y_')
-    const ns = read('n_')
+    const ys = JsonTestSuite.parsing.flatMap(_ => (_.name.startsWith('y_') ? [_.input] : []))
+    const ns = JsonTestSuite.parsing.flatMap(_ => (_.name.startsWith('n_') ? [_.input] : []))
 
     expect(ys).toHaveLength(95)
     expect(ns).toHaveLength(188)
