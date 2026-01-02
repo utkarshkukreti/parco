@@ -43,7 +43,7 @@
   },
   "packageManager": "pnpm@10.27.0",
   "devDependencies": {
-    "@types/node": "22.19.3",
+    "@types/node": "24.10.4",
     "json-test-suite": "0.1.0",
     "prettier": "3.7.4",
     "tinybench": "6.0.0",
