@@ -6,15 +6,11 @@ jobs:
   main:
     name: Main
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        node: ['20', '22']
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
+      - uses: jdx/mise-action@v3
       - run: corepack enable
+      - run: mise reshim
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
